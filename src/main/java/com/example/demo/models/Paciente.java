@@ -38,7 +38,10 @@ public class Paciente {
     private String Nacio;
 
     @Column()
-    private Byte FotoPerfil;
+    private String FotoPerfil;
+
+    @Column()
+    private String ExtensionFoto;
 
     public String getApellido() {
         return Apellido;
@@ -56,7 +59,7 @@ public class Paciente {
         return FechaNacimiento;
     }
 
-    public Byte getFotoPerfil() {
+    public String getFotoPerfil() {
         return FotoPerfil;
     }
 
@@ -80,6 +83,10 @@ public class Paciente {
         return Ocupacion;
     }
 
+    public String getExtensionFoto() {
+        return ExtensionFoto;
+    }
+
     public void setApellido(String apellido) {
         Apellido = apellido;
     }
@@ -96,7 +103,7 @@ public class Paciente {
         FechaNacimiento = fechaNacimiento;
     }
 
-    public void setFotoPerfil(Byte fotoPerfil) {
+    public void setFotoPerfil(String fotoPerfil) {
         FotoPerfil = fotoPerfil;
     }
 
@@ -120,7 +127,11 @@ public class Paciente {
         Ocupacion = ocupacion;
     }
 
-    Paciente() {
+    public void setExtensionFoto(String extensionFoto) {
+        ExtensionFoto = extensionFoto;
+    }
+
+    public Paciente() {
 
     }
 
