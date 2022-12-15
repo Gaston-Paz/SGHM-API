@@ -19,8 +19,8 @@ public class PacienteService {
         return (ArrayList<Paciente>) _pacienteRepository.findAll();
     }
 
-    public Paciente guardarPaciente(Paciente usuario) {
-        return _pacienteRepository.save(usuario);
+    public Paciente guardarPaciente(Paciente paciente) {
+        return _pacienteRepository.save(paciente);
     }
 
     public Optional<Paciente> obtenerPorId(Long id) {

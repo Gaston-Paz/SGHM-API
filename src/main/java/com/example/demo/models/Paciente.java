@@ -40,8 +40,11 @@ public class Paciente {
     @Column()
     private String FotoPerfil;
 
-    @Column()
-    private String ExtensionFoto;
+    @OneToOne(mappedBy = "paciente", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private ConsultaInicial consultaInicial;
+
+    @OneToOne(mappedBy = "paciente", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Antecedente antecedente;
 
     public String getApellido() {
         return Apellido;
@@ -83,10 +86,6 @@ public class Paciente {
         return Ocupacion;
     }
 
-    public String getExtensionFoto() {
-        return ExtensionFoto;
-    }
-
     public void setApellido(String apellido) {
         Apellido = apellido;
     }
@@ -125,10 +124,6 @@ public class Paciente {
 
     public void setOcupacion(String ocupacion) {
         Ocupacion = ocupacion;
-    }
-
-    public void setExtensionFoto(String extensionFoto) {
-        ExtensionFoto = extensionFoto;
     }
 
     public Paciente() {
