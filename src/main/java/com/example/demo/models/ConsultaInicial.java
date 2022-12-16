@@ -7,12 +7,12 @@ import javax.persistence.*;
 @Entity
 @Table(name = "ConsultasIniciales")
 public class ConsultaInicial {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(unique = true, nullable = false)
-    private long IdConsulta;
+    private Long idConsulta;
 
-    @JoinColumn(name = "id_paciente")
+    @JoinColumn(name = "id_paciente", unique = true)
     @OneToOne(fetch = FetchType.LAZY)
     private Paciente paciente;
 
@@ -46,6 +46,10 @@ public class ConsultaInicial {
     @Column()
     private boolean Covid;
 
+    public Long getIdConsulta() {
+        return idConsulta;
+    }
+
     public String getActividadFisica() {
         return ActividadFisica;
     }
@@ -64,10 +68,6 @@ public class ConsultaInicial {
 
     public Date getFecha() {
         return Fecha;
-    }
-
-    public long getIdConsulta() {
-        return IdConsulta;
     }
 
     public String getIntensidad() {
@@ -106,16 +106,16 @@ public class ConsultaInicial {
         Caracteristica = caracteristica;
     }
 
+    public void setIdConsulta(Long idConsulta) {
+        this.idConsulta = idConsulta;
+    }
+
     public void setCovid(boolean covid) {
         Covid = covid;
     }
 
     public void setFecha(Date fecha) {
         Fecha = fecha;
-    }
-
-    public void setIdConsulta(long idConsulta) {
-        IdConsulta = idConsulta;
     }
 
     public void setIntensidad(String intensidad) {

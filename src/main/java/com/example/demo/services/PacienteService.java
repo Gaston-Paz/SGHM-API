@@ -1,17 +1,11 @@
 package com.example.demo.services;
 
-import java.io.Console;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Optional;
-
-import org.hibernate.query.criteria.internal.expression.function.TrimFunction;
+import com.example.demo.excepciones.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException.BadRequest;
-import org.springframework.web.client.HttpClientErrorException.Conflict;
-import org.springframework.web.client.HttpClientErrorException.NotFound;
 
 import com.example.demo.models.Paciente;
 import com.example.demo.repositories.PacienteRepository;
@@ -26,9 +20,33 @@ public class PacienteService {
     }
 
     public Paciente guardarPaciente(Paciente paciente) throws Exception {
+        if (PacienteExiste(paciente)) {
+            throw new Conflict(
+                    "Ya existe un paciente con esta combinación de Nombre, Apellido y E-mail: " + paciente.getNombre()
+                            + ", " + paciente.getApellido() + " " + paciente.getFechaNacimientoToString());
+        }
+        try {
+            Paciente pac = _pacienteRepository.save(paciente);
+            return pac;
+        } catch (Conflict con) {
+            throw con;
+        } catch (BadRequestException bad) {
+            throw bad;
+        } catch (Exception e) {
+            throw e;
+        }
+    }
 
-        return _pacienteRepository.save(paciente);
-
+    public Paciente actualizarPaciente(Paciente paciente) {
+        try {
+            return _pacienteRepository.save(paciente);
+        } catch (Conflict con) {
+            throw con;
+        } catch (BadRequestException bad) {
+            throw bad;
+        } catch (Exception e) {
+            throw e;
+        }
     }
 
     public Optional<Paciente> obtenerPorId(Long id) {
@@ -58,7 +76,6 @@ public class PacienteService {
                     && paciente.getApellido().toUpperCase().trim().equals(aux.getApellido().toUpperCase().trim())
                     && paciente.getFechaNacimiento().equals(aux.getFechaNacimiento())) {
                 existe = true;
-                System.out.println("Existe");
             }
 
         }

@@ -1,11 +1,13 @@
 package com.example.demo.services;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.excepciones.*;
 import com.example.demo.models.ConsultaInicial;
 import com.example.demo.repositories.ConsultaInicialRepository;
 
@@ -18,8 +20,39 @@ public class ConsultaInicialService {
         return (ArrayList<ConsultaInicial>) _ConsultaInicialRepository.findAll();
     }
 
+    public boolean ConsultaExiste(ConsultaInicial consulta) {
+        boolean existe = false;
+        ArrayList<ConsultaInicial> lista = (ArrayList<ConsultaInicial>) _ConsultaInicialRepository.findAll();
+        Iterator<ConsultaInicial> it = lista.iterator();
+        while (it.hasNext()) {
+            ConsultaInicial aux = it.next();
+            if (consulta.getPaciente().getIdPaciente() == aux.getPaciente().getIdPaciente()) {
+                existe = true;
+            }
+
+        }
+
+        return existe;
+    }
+
     public ConsultaInicial guardarConsulta(ConsultaInicial consulta) {
-        return _ConsultaInicialRepository.save(consulta);
+        if (ConsultaExiste(consulta)) {
+            System.out.println(consulta.getPaciente().getIdPaciente());
+            throw new Conflict(
+                    "Ya existe una consulta inicial cargada para el paciente: " + consulta.getPaciente().getNombre()
+                            + ", " + consulta.getPaciente().getApellido());
+        }
+        try {
+            ConsultaInicial con = _ConsultaInicialRepository.save(consulta);
+            return con;
+        } catch (Conflict con) {
+            throw con;
+        } catch (BadRequestException bad) {
+            throw bad;
+        } catch (Exception e) {
+            throw e;
+        }
+
     }
 
     public Optional<ConsultaInicial> obtenerPorId(Long id) {

@@ -1,19 +1,16 @@
 package com.example.demo.models;
 
-import java.sql.Date;
-import java.util.Set;
-
 import javax.persistence.*;
 
 @Entity
 @Table(name = "Antecedentes")
 public class Antecedente {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(unique = true, nullable = false)
-    private long IdAntecedente;
+    private Long idAntecedente;
 
-    @JoinColumn(name = "id_paciente")
+    @JoinColumn(name = "id_paciente", unique = true)
     @OneToOne(fetch = FetchType.LAZY)
     private Paciente paciente;
 
@@ -105,6 +102,10 @@ public class Antecedente {
         return Abortos;
     }
 
+    public Long getIdAntecedente() {
+        return idAntecedente;
+    }
+
     public String getAccidentes() {
         return Accidentes;
     }
@@ -143,10 +144,6 @@ public class Antecedente {
 
     public String getFrecuencia() {
         return Frecuencia;
-    }
-
-    public long getIdAntecedente() {
-        return IdAntecedente;
     }
 
     public String getImplanteInferior() {
@@ -205,6 +202,10 @@ public class Antecedente {
         Abortos = abortos;
     }
 
+    public void setIdAntecedente(Long idAntecedente) {
+        this.idAntecedente = idAntecedente;
+    }
+
     public void setAccidentes(String accidentes) {
         Accidentes = accidentes;
     }
@@ -251,10 +252,6 @@ public class Antecedente {
 
     public void setFrecuencia(String frecuencia) {
         Frecuencia = frecuencia;
-    }
-
-    public void setIdAntecedente(long idAntecedente) {
-        IdAntecedente = idAntecedente;
     }
 
     public void setImplanteInferior(String implanteInferior) {

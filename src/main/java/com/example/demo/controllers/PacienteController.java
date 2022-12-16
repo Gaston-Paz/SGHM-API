@@ -1,24 +1,17 @@
 package com.example.demo.controllers;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Optional;
 
-import javax.persistence.Entity;
+import javax.transaction.Transactional;
 
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.RequestEntity.BodyBuilder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import com.example.demo.models.AltaPaciente;
 import com.example.demo.models.Estudio;
 import com.example.demo.models.Paciente;
@@ -48,6 +41,7 @@ public class PacienteController {
         return _pacienteService.obtenerPacientes();
     }
 
+    @Transactional
     @PostMapping
     public Paciente guardarPaciente(@RequestBody AltaPaciente altaPaciente) throws Exception {
         try {
@@ -58,14 +52,14 @@ public class PacienteController {
             this._AntecedenteService.guardarAntecedente(altaPaciente.getAntecedente());
             return paciente;
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             throw e;
         }
     }
 
-    @PostMapping("{idPaciente}/{esEstudio}")
+    @PostMapping("/{idPaciente}/{esEstudio}")
     public Paciente guardarFotos(@RequestParam("foto") MultipartFile foto,
-            @PathVariable("idPaciente") long idPaciente, @PathVariable("esEstudio") Boolean esEstudio) {
+            @PathVariable("idPaciente") long idPaciente, @PathVariable("esEstudio") Boolean esEstudio)
+            throws Exception {
         try {
             if (!esEstudio) {
                 if (!foto.isEmpty()) {
@@ -79,7 +73,7 @@ public class PacienteController {
                     Path rutaAbsoluta = Paths.get(ruta + "//Perfil.jpg");
                     Files.write(rutaAbsoluta, bytes);
                     paciente.get().setFotoPerfil(rutaAbsoluta.toString());
-                    return _pacienteService.guardarPaciente(paciente.get());
+                    return _pacienteService.actualizarPaciente(paciente.get());
                 }
             } else {
                 int index = 1;
@@ -109,8 +103,9 @@ public class PacienteController {
 
         } catch (Exception e) {
             System.out.println(e);
+            throw e;
         }
-        return new Paciente();
+        return null;
     }
 
     @GetMapping("/{id}")
