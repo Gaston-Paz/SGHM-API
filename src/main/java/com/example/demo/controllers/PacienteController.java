@@ -48,19 +48,8 @@ public class PacienteController {
         return _pacienteService.obtenerPacientes();
     }
 
-    // Enviando el Id sirve como PUT sino es POST
-    // @PostMapping
-    // public Paciente guardarPaciente(@RequestBody Paciente paciente) {
-    // try {
-    // return this._pacienteService.guardarPaciente(paciente);
-    // } catch (Exception e) {
-    // System.out.println(e);
-    // }
-    // return new Paciente();
-    // }
-
     @PostMapping
-    public Paciente guardarPaciente(@RequestBody AltaPaciente altaPaciente) {
+    public Paciente guardarPaciente(@RequestBody AltaPaciente altaPaciente) throws Exception {
         try {
             Paciente paciente = this._pacienteService.guardarPaciente(altaPaciente.getPaciente());
             altaPaciente.getConsultaInicial().setPaciente(paciente);
@@ -69,9 +58,9 @@ public class PacienteController {
             this._AntecedenteService.guardarAntecedente(altaPaciente.getAntecedente());
             return paciente;
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println(e.getMessage());
+            throw e;
         }
-        return new Paciente();
     }
 
     @PostMapping("{idPaciente}/{esEstudio}")
@@ -124,13 +113,13 @@ public class PacienteController {
         return new Paciente();
     }
 
-    @GetMapping(path = "/{id}")
+    @GetMapping("/{id}")
     public Optional<Paciente> obtenerPorId(@PathVariable("id") Long id) {
         return _pacienteService.obtenerPorId(id);
     }
 
-    @GetMapping("/query")
-    public ArrayList<Paciente> obtenerPorNombre(@RequestParam("Nombre") String Nombre) {
+    @GetMapping("porNombre/{Nombre}")
+    public ArrayList<Paciente> obtenerPorNombre(@PathVariable("Nombre") String Nombre) {
         return _pacienteService.obtenerPorNombre(Nombre);
     }
 
