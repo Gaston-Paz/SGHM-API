@@ -55,8 +55,17 @@ public class ConsultaInicialService {
 
     }
 
-    public Optional<ConsultaInicial> obtenerPorId(Long id) {
-        return _ConsultaInicialRepository.findById(id);
+    public ConsultaInicial obtenerPorId(Long id) {
+        ArrayList<ConsultaInicial> lista = (ArrayList<ConsultaInicial>) _ConsultaInicialRepository.findAll();
+        Iterator<ConsultaInicial> it = lista.iterator();
+        while (it.hasNext()) {
+            ConsultaInicial aux = it.next();
+            if (id == aux.getPaciente().getIdPaciente()) {
+                return aux;
+            }
+
+        }
+        return null;
     }
 
     public boolean eliminarConsulta(Long id) {

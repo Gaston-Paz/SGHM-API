@@ -58,7 +58,7 @@ public class Paciente {
         return Email;
     }
 
-    public String getFechaNacimientoToString() {
+    public String nacimientoToString() {
         String[] vec = FechaNacimiento.toString().split(" ");
         String fecha = vec[2] + "/" + MapMes(vec[1]) + "/" + vec[5];
         return fecha;

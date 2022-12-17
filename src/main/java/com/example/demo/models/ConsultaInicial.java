@@ -13,7 +13,7 @@ public class ConsultaInicial {
     private Long idConsulta;
 
     @JoinColumn(name = "id_paciente", unique = true)
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne()
     private Paciente paciente;
 
     @Column()

@@ -23,7 +23,7 @@ public class PacienteService {
         if (PacienteExiste(paciente)) {
             throw new Conflict(
                     "Ya existe un paciente con esta combinación de Nombre, Apellido y E-mail: " + paciente.getNombre()
-                            + ", " + paciente.getApellido() + " " + paciente.getFechaNacimientoToString());
+                            + ", " + paciente.getApellido() + " " + paciente.nacimientoToString());
         }
         try {
             Paciente pac = _pacienteRepository.save(paciente);

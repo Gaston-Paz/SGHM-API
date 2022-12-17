@@ -11,7 +11,7 @@ public class Antecedente {
     private Long idAntecedente;
 
     @JoinColumn(name = "id_paciente", unique = true)
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne()
     private Paciente paciente;
 
     @Column()
@@ -164,6 +164,10 @@ public class Antecedente {
 
     public String getOtros() {
         return Otros;
+    }
+
+    public boolean getOrtodoncia() {
+        return Ortodoncia;
     }
 
     public Paciente getPaciente() {

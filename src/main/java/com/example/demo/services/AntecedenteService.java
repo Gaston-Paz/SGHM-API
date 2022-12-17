@@ -53,8 +53,17 @@ public class AntecedenteService {
         }
     }
 
-    public Optional<Antecedente> obtenerPorId(Long id) {
-        return _AntecedenteRepository.findById(id);
+    public Antecedente obtenerPorId(Long id) {
+        ArrayList<Antecedente> lista = (ArrayList<Antecedente>) _AntecedenteRepository.findAll();
+        Iterator<Antecedente> it = lista.iterator();
+        while (it.hasNext()) {
+            Antecedente aux = it.next();
+            if (id == aux.getPaciente().getIdPaciente()) {
+                return aux;
+            }
+
+        }
+        return null;
     }
 
     public boolean eliminarAntecedente(Long id) {
