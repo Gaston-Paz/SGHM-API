@@ -7,6 +7,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.excepciones.BadRequestException;
+import com.example.demo.excepciones.Conflict;
 import com.example.demo.models.*;
 import com.example.demo.repositories.*;
 
@@ -42,8 +44,12 @@ public class EstudioService {
         try {
             _EstudioRepository.deleteById(id);
             return true;
+        } catch (Conflict con) {
+            throw con;
+        } catch (BadRequestException bad) {
+            throw bad;
         } catch (Exception e) {
-            return false;
+            throw e;
         }
     }
 }

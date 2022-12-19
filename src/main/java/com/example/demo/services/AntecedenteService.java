@@ -2,11 +2,8 @@ package com.example.demo.services;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.example.demo.models.*;
 import com.example.demo.repositories.*;
 import com.example.demo.excepciones.*;
@@ -70,8 +67,12 @@ public class AntecedenteService {
         try {
             _AntecedenteRepository.deleteById(id);
             return true;
+        } catch (Conflict con) {
+            throw con;
+        } catch (BadRequestException bad) {
+            throw bad;
         } catch (Exception e) {
-            return false;
+            throw e;
         }
     }
 }

@@ -72,8 +72,12 @@ public class ConsultaInicialService {
         try {
             _ConsultaInicialRepository.deleteById(id);
             return true;
+        } catch (Conflict con) {
+            throw con;
+        } catch (BadRequestException bad) {
+            throw bad;
         } catch (Exception e) {
-            return false;
+            throw e;
         }
     }
 }
