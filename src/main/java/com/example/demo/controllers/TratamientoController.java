@@ -17,7 +17,7 @@ public class TratamientoController {
 
     @GetMapping
     public ArrayList<Tratamiento> obtenerTratamiento() {
-        ArrayList<Tratamiento> lista = _TratamientoService.obtenerAntecedentes();
+        ArrayList<Tratamiento> lista = _TratamientoService.obtenerTratamientos();
         return lista;
     }
 

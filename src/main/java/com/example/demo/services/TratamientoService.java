@@ -15,7 +15,7 @@ public class TratamientoService {
     @Autowired
     TratamientoRepository _TratamientoRepository;
 
-    public ArrayList<Tratamiento> obtenerAntecedentes() {
+    public ArrayList<Tratamiento> obtenerTratamientos() {
         return (ArrayList<Tratamiento>) _TratamientoRepository.findAll();
     }
 

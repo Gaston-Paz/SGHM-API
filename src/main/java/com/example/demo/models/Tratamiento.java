@@ -11,8 +11,8 @@ public class Tratamiento {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long IdTratamiento;
 
-    @JoinColumn(name = "id_paciente", unique = true)
-    @OneToOne()
+    @JoinColumn(name = "id_paciente")
+    @ManyToOne()
     private Paciente Paciente;
 
     private Date Fecha;

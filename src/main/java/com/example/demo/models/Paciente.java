@@ -46,6 +46,9 @@ public class Paciente {
     @OneToOne(mappedBy = "paciente", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Antecedente antecedente;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Tratamiento tratamiento;
+
     public String getApellido() {
         return Apellido;
     }
