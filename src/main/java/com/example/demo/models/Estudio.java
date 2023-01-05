@@ -13,7 +13,7 @@ public class Estudio {
     private long IdEstudio;
 
     @JoinColumn(name = "id_paciente")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     private Paciente paciente;
 
     @Column()

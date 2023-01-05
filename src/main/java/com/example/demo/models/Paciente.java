@@ -49,6 +49,9 @@ public class Paciente {
     @ManyToOne(fetch = FetchType.LAZY)
     private Tratamiento tratamiento;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Estudio estudio;
+
     public String getApellido() {
         return Apellido;
     }
