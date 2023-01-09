@@ -18,6 +18,9 @@ public class Antecedente {
     private String Cirugias;
 
     @Column()
+    private boolean Contencion;
+
+    @Column()
     private String ImplanteSuperior;
 
     @Column()
@@ -108,6 +111,10 @@ public class Antecedente {
 
     public String getAccidentes() {
         return Accidentes;
+    }
+
+    public boolean getContencion() {
+        return Contencion;
     }
 
     public String getAlimentacion() {
@@ -212,6 +219,10 @@ public class Antecedente {
 
     public void setAccidentes(String accidentes) {
         Accidentes = accidentes;
+    }
+
+    public void setContencion(boolean contencion) {
+        Contencion = contencion;
     }
 
     public void setAlimentacion(String alimentacion) {
