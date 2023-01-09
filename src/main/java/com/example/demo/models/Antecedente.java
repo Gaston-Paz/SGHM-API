@@ -75,7 +75,10 @@ public class Antecedente {
     private String Partos;
 
     @Column()
-    private String Abortos;
+    private String AbortosInducido;
+
+    @Column()
+    private String AbortosEspontaneo;
 
     @Column()
     private boolean Menstruacion;
@@ -104,8 +107,12 @@ public class Antecedente {
     @Column()
     private boolean Diabetes;
 
-    public String getAbortos() {
-        return Abortos;
+    public String getAbortosInducido() {
+        return AbortosInducido;
+    }
+
+    public String getAbortosEspontaneo() {
+        return AbortosEspontaneo;
     }
 
     public Long getIdAntecedente() {
@@ -216,8 +223,12 @@ public class Antecedente {
         return Volumen;
     }
 
-    public void setAbortos(String abortos) {
-        Abortos = abortos;
+    public void setAbortosEspontaneo(String abortosEspontaneo) {
+        AbortosEspontaneo = abortosEspontaneo;
+    }
+
+    public void setAbortosInducido(String abortosInducido) {
+        AbortosInducido = abortosInducido;
     }
 
     public void setProtesis(String protesis) {
