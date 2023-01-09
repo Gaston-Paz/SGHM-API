@@ -48,6 +48,9 @@ public class Antecedente {
     private String Cardiaco;
 
     @Column()
+    private String Oseo;
+
+    @Column()
     private String Urogenital;
 
     @Column()
@@ -109,6 +112,10 @@ public class Antecedente {
 
     public String getAbortosInducido() {
         return AbortosInducido;
+    }
+
+    public String getOseo() {
+        return Oseo;
     }
 
     public String getAbortosEspontaneo() {
@@ -225,6 +232,10 @@ public class Antecedente {
 
     public void setAbortosEspontaneo(String abortosEspontaneo) {
         AbortosEspontaneo = abortosEspontaneo;
+    }
+
+    public void setOseo(String oseo) {
+        Oseo = oseo;
     }
 
     public void setAbortosInducido(String abortosInducido) {
