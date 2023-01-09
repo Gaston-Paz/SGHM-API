@@ -35,6 +35,12 @@ public class Paciente {
     private Date FechaNacimiento;
 
     @Column(nullable = false)
+    private String Otros;
+
+    @Column(nullable = false)
+    private String DeParte;
+
+    @Column(nullable = false)
     private String Nacio;
 
     @Column()
@@ -58,6 +64,14 @@ public class Paciente {
 
     public String getCelular() {
         return Celular;
+    }
+
+    public String getDeParte() {
+        return DeParte;
+    }
+
+    public String getOtros() {
+        return Otros;
     }
 
     public String getEmail() {
@@ -142,6 +156,14 @@ public class Paciente {
 
     public void setFechaNacimiento(Date fechaNacimiento) {
         FechaNacimiento = fechaNacimiento;
+    }
+
+    public void setDeParte(String deParte) {
+        DeParte = deParte;
+    }
+
+    public void setOtros(String otros) {
+        Otros = otros;
     }
 
     public void setFotoPerfil(String fotoPerfil) {
