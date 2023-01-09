@@ -87,6 +87,9 @@ public class Antecedente {
     private String Duracion;
 
     @Column()
+    private String Protesis;
+
+    @Column()
     private String Volumen;
 
     @Column()
@@ -131,6 +134,10 @@ public class Antecedente {
 
     public String getDigestivo() {
         return Digestivo;
+    }
+
+    public String getProtesis() {
+        return Protesis;
     }
 
     public String getDolorCabeza() {
@@ -211,6 +218,10 @@ public class Antecedente {
 
     public void setAbortos(String abortos) {
         Abortos = abortos;
+    }
+
+    public void setProtesis(String protesis) {
+        Protesis = protesis;
     }
 
     public void setIdAntecedente(Long idAntecedente) {
