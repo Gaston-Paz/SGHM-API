@@ -23,6 +23,12 @@ public class ConsultaInicial {
     private String Motivo;
 
     @Column()
+    private Date FechaCovid;
+
+    @Column()
+    private String Otros;
+
+    @Column()
     private String Antiguedad;
 
     @Column()
@@ -48,6 +54,14 @@ public class ConsultaInicial {
 
     public Long getIdConsulta() {
         return idConsulta;
+    }
+
+    public Date getFechaCovid() {
+        return FechaCovid;
+    }
+
+    public String getOtros() {
+        return Otros;
     }
 
     public String getActividadFisica() {
@@ -96,6 +110,14 @@ public class ConsultaInicial {
 
     public void setAntiguedad(String antiguedad) {
         Antiguedad = antiguedad;
+    }
+
+    public void setFechaCovid(Date fechaCovid) {
+        FechaCovid = fechaCovid;
+    }
+
+    public void setOtros(String otros) {
+        Otros = otros;
     }
 
     public void setAtenua(String atenua) {
