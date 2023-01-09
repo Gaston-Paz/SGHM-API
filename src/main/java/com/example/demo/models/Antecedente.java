@@ -99,6 +99,12 @@ public class Antecedente {
     private String Volumen;
 
     @Column()
+    private String Fuma;
+
+    @Column()
+    private String OtrasDrogas;
+
+    @Column()
     private String Perdidas;
 
     @Column()
@@ -124,6 +130,14 @@ public class Antecedente {
 
     public Long getIdAntecedente() {
         return idAntecedente;
+    }
+
+    public String getFuma() {
+        return Fuma;
+    }
+
+    public String getOtrasDrogas() {
+        return OtrasDrogas;
     }
 
     public String getAccidentes() {
@@ -232,6 +246,14 @@ public class Antecedente {
 
     public void setAbortosEspontaneo(String abortosEspontaneo) {
         AbortosEspontaneo = abortosEspontaneo;
+    }
+
+    public void setFuma(String fuma) {
+        Fuma = fuma;
+    }
+
+    public void setOtrasDrogas(String otrasDrogas) {
+        OtrasDrogas = otrasDrogas;
     }
 
     public void setOseo(String oseo) {
