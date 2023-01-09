@@ -2,6 +2,8 @@ package com.example.demo.models;
 
 import javax.persistence.*;
 
+import org.springframework.beans.factory.annotation.Value;
+
 @Entity
 @Table(name = "Antecedentes")
 public class Antecedente {
@@ -18,6 +20,7 @@ public class Antecedente {
     private String Cirugias;
 
     @Column()
+    @Value("${Contencion:true}")
     private boolean Contencion;
 
     @Column()

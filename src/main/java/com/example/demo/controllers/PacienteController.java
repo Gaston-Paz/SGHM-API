@@ -19,6 +19,7 @@ import com.example.demo.services.AntecedenteService;
 import com.example.demo.services.ConsultaInicialService;
 import com.example.demo.services.EstudioService;
 import com.example.demo.services.PacienteService;
+import com.example.demo.services.TratamientoService;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
@@ -36,6 +37,9 @@ public class PacienteController {
     @Autowired
     EstudioService _EstudioService;
 
+    @Autowired
+    TratamientoService _TratamientoService;
+
     @GetMapping
     public ArrayList<Paciente> obtenerPacientes() {
         return _pacienteService.obtenerPacientes();
@@ -50,6 +54,8 @@ public class PacienteController {
             this._ConsultaInicialService.guardarConsulta(altaPaciente.getConsultaInicial());
             altaPaciente.getAntecedente().setPaciente(paciente);
             this._AntecedenteService.guardarAntecedente(altaPaciente.getAntecedente());
+            altaPaciente.getTratamiento().setPaciente(paciente);
+            this._TratamientoService.guardarTratamiento(altaPaciente.getTratamiento());
             return paciente;
         } catch (Exception e) {
             throw e;
