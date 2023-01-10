@@ -62,6 +62,16 @@ public class PacienteController {
         }
     }
 
+    @PostMapping(path = "/actualizar")
+    public Paciente actualizarPaciente(@RequestBody Paciente paciene) throws Exception {
+        try {
+            Paciente paciente = this._pacienteService.guardarPaciente(paciene);
+            return paciente;
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
     @PostMapping("/{idPaciente}/{esEstudio}")
     public Paciente guardarFotos(@RequestParam("foto") MultipartFile foto,
             @PathVariable("idPaciente") long idPaciente, @PathVariable("esEstudio") Boolean esEstudio)
