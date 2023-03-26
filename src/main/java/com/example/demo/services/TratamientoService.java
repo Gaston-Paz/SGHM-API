@@ -16,6 +16,9 @@ public class TratamientoService {
     @Autowired
     TratamientoRepository _TratamientoRepository;
 
+    @Autowired
+    ConsultaInicialRepository _ConsultaInicialRepository;
+
     public ArrayList<Tratamiento> obtenerTratamientos() {
         return (ArrayList<Tratamiento>) _TratamientoRepository.findAll();
     }
@@ -25,9 +28,16 @@ public class TratamientoService {
             ArrayList<Tratamiento> tratamientosPaciente = this.obtenerPaciente(tratamiento.getPaciente());
             boolean existe = existeTratamiento(tratamientosPaciente, tratamiento);
             if (existe) {
-                Conflict con = new Conflict("Ya existe un tratamiento realizado en esta fecha para el paciente.");
-                throw con;
+                throw new BadRequestException("Ya existe un tratamiento realizado en esta fecha para el paciente.");
             }
+
+            ConsultaInicial consultaInicial = _ConsultaInicialRepository.findByPaciente(tratamiento.getPaciente());
+
+            if (consultaInicial.getFecha().compareTo(tratamiento.getFecha()) > 0) {
+                throw new BadRequestException(
+                        "La fecha del nuevo tratamiento no puede ser anterior a la fecha de la primera consulta.");
+            }
+
             tratamiento = _TratamientoRepository.save(tratamiento);
             return tratamiento;
         } catch (Conflict con) {

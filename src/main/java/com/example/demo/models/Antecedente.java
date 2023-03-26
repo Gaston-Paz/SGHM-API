@@ -16,107 +16,107 @@ public class Antecedente {
     @OneToOne()
     private Paciente paciente;
 
-    @Column()
+    @Column(length = Integer.MAX_VALUE)
     private String Cirugias;
 
     @Column()
     @Value("${Contencion:true}")
     private boolean Contencion;
 
-    @Column()
+    @Column(length = Integer.MAX_VALUE)
     private String ImplanteSuperior;
 
-    @Column()
+    @Column(length = Integer.MAX_VALUE)
     private String ImplanteInferior;
 
-    @Column()
+    @Column(length = Integer.MAX_VALUE)
     private boolean Ortodoncia;
 
-    @Column()
+    @Column(length = Integer.MAX_VALUE)
     private String EdadOrtodoncia;
 
-    @Column()
+    @Column(length = Integer.MAX_VALUE)
     private String PiezasFaltantesSup;
 
-    @Column()
+    @Column(length = Integer.MAX_VALUE)
     private String PiezasFaltantesInf;
 
-    @Column()
+    @Column(length = Integer.MAX_VALUE)
     private boolean PlacaDescanso;
 
-    @Column()
+    @Column(length = Integer.MAX_VALUE)
     private String Intestinal;
 
-    @Column()
+    @Column(length = Integer.MAX_VALUE)
     private String Digestivo;
 
-    @Column()
+    @Column(length = Integer.MAX_VALUE)
     private String Cardiaco;
 
-    @Column()
+    @Column(length = Integer.MAX_VALUE)
     private String Oseo;
 
-    @Column()
+    @Column(length = Integer.MAX_VALUE)
     private String Urogenital;
 
-    @Column()
+    @Column(length = Integer.MAX_VALUE)
     private String Respiratorio;
 
-    @Column()
+    @Column(length = Integer.MAX_VALUE)
     private String Medicacion;
 
-    @Column()
+    @Column(length = Integer.MAX_VALUE)
     private String Otros;
 
-    @Column()
+    @Column(length = Integer.MAX_VALUE)
     private String Fracturas;
 
-    @Column()
+    @Column(length = Integer.MAX_VALUE)
     private String DolorCabeza;
 
-    @Column()
+    @Column(length = Integer.MAX_VALUE)
     private String Alimentacion;
 
     @Column()
     private boolean Embarazos;
 
-    @Column()
+    @Column(length = Integer.MAX_VALUE)
     private String Partos;
 
-    @Column()
+    @Column(length = Integer.MAX_VALUE)
     private String AbortosInducido;
 
-    @Column()
+    @Column(length = Integer.MAX_VALUE)
     private String AbortosEspontaneo;
 
     @Column()
     private boolean Menstruacion;
 
-    @Column()
+    @Column(length = Integer.MAX_VALUE)
     private String Frecuencia;
 
-    @Column()
+    @Column(length = Integer.MAX_VALUE)
     private String Duracion;
 
-    @Column()
+    @Column(length = Integer.MAX_VALUE)
     private String Protesis;
 
-    @Column()
+    @Column(length = Integer.MAX_VALUE)
     private String Volumen;
 
-    @Column()
+    @Column(length = Integer.MAX_VALUE)
     private String Fuma;
 
-    @Column()
+    @Column(length = Integer.MAX_VALUE)
     private String OtrasDrogas;
 
-    @Column()
+    @Column(length = Integer.MAX_VALUE)
     private String Perdidas;
 
-    @Column()
+    @Column(length = Integer.MAX_VALUE)
     private String Accidentes;
 
-    @Column()
+    @Column(length = Integer.MAX_VALUE)
     private String Tiroides;
 
     @Column()

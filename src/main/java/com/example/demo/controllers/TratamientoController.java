@@ -5,6 +5,8 @@ import java.util.Optional;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import com.example.demo.excepciones.BadRequestException;
 import com.example.demo.models.Tratamiento;
 import com.example.demo.services.TratamientoService;
 
@@ -17,13 +19,23 @@ public class TratamientoController {
 
     @GetMapping
     public ArrayList<Tratamiento> obtenerTratamiento() {
-        ArrayList<Tratamiento> lista = _TratamientoService.obtenerTratamientos();
-        return lista;
+        try {
+            ArrayList<Tratamiento> lista = _TratamientoService.obtenerTratamientos();
+            return lista;
+        } catch (Exception e) {
+            throw new BadRequestException(
+                    "No se pudieron obtener los Tratamientos. Si persiste el error comuníquese con el Administrador");
+        }
     }
 
     @GetMapping("/{id}")
     public Optional<Tratamiento> obtenerPorId(@PathVariable("id") Long id) {
-        return _TratamientoService.obtenerPorId(id);
+        try {
+            return _TratamientoService.obtenerPorId(id);
+        } catch (Exception e) {
+            throw new BadRequestException(
+                    "No se pudo obtener el Tratamiento. Si persiste el error comuníquese con el Administrador");
+        }
     }
 
     @Transactional

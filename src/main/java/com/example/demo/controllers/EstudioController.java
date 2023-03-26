@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.demo.excepciones.BadRequestException;
 import com.example.demo.models.Estudio;
 import com.example.demo.services.EstudioService;
 import com.example.demo.services.PacienteService;
@@ -25,22 +26,32 @@ public class EstudioController {
     @Transactional
     @GetMapping
     public ArrayList<Estudio> obtenerEstudios() {
-        return _EstudioService.obtenerEstudios();
+        try {
+            return _EstudioService.obtenerEstudios();
+        } catch (Exception e) {
+            throw new BadRequestException(
+                    "No se pudieron obtener los Estudios. Si persiste el error comuníquese con el Administrador");
+        }
     }
 
     @PostMapping("/{idPaciente}/{nombre}")
     public void guardarEstudio(@RequestParam("estudio") MultipartFile estudio,
             @PathVariable("idPaciente") long idPaciente, @PathVariable("nombre") String nombre)
             throws Exception {
-        Estudio nuevo = new Estudio();
-        java.util.Date utilDate = new java.util.Date();
-        java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
-        nuevo.setFecha(sqlDate);
-        nuevo.setPaciente(_pacienteService.obtenerPorId(idPaciente).get());
-        var estudioBytes = estudio.getBytes();
-        nuevo.setEstudio(estudioBytes);
-        nuevo.setNombreArchivo(nombre);
-        _EstudioService.guardarEstudio(nuevo);
+        try {
+            Estudio nuevo = new Estudio();
+            java.util.Date utilDate = new java.util.Date();
+            java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+            nuevo.setFecha(sqlDate);
+            nuevo.setPaciente(_pacienteService.obtenerPorId(idPaciente).get());
+            var estudioBytes = estudio.getBytes();
+            nuevo.setEstudio(estudioBytes);
+            nuevo.setNombreArchivo(nombre);
+            _EstudioService.guardarEstudio(nuevo);
+        } catch (Exception e) {
+            throw e;
+        }
+
     }
 
 }

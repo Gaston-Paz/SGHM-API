@@ -33,16 +33,8 @@ public class AntecedenteService {
     }
 
     public Antecedente guardarAntecedente(Antecedente antecedente) {
-        try {
-            Antecedente ant = _AntecedenteRepository.save(antecedente);
-            return ant;
-        } catch (Conflict con) {
-            throw con;
-        } catch (BadRequestException bad) {
-            throw bad;
-        } catch (Exception e) {
-            throw e;
-        }
+        Antecedente ant = _AntecedenteRepository.save(antecedente);
+        return ant;
     }
 
     public Antecedente obtenerPorId(Long id) {
@@ -59,15 +51,7 @@ public class AntecedenteService {
     }
 
     public boolean eliminarAntecedente(Long id) {
-        try {
-            _AntecedenteRepository.deleteById(id);
-            return true;
-        } catch (Conflict con) {
-            throw con;
-        } catch (BadRequestException bad) {
-            throw bad;
-        } catch (Exception e) {
-            throw e;
-        }
+        _AntecedenteRepository.deleteById(id);
+        return true;
     }
 }

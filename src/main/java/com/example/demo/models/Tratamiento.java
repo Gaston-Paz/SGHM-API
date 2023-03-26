@@ -19,7 +19,7 @@ public class Tratamiento {
     @Column(nullable = false)
     private Date fecha;
 
-    @Column(nullable = false)
+    @Column(length = Integer.MAX_VALUE, nullable = false)
     private String Motivo;
 
     @Column()
@@ -37,10 +37,10 @@ public class Tratamiento {
     @Column()
     private String Especifico;
 
-    @Column(nullable = false)
+    @Column(length = Integer.MAX_VALUE, nullable = false)
     private String Sedestacion;
 
-    @Column()
+    @Column(length = Integer.MAX_VALUE)
     private String Sugerencias;
 
     @Column()

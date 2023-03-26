@@ -19,7 +19,7 @@ public class ConsultaInicial {
     @Column(nullable = false)
     private Date Fecha;
 
-    @Column(nullable = false)
+    @Column(length = Integer.MAX_VALUE, nullable = false)
     private String Motivo;
 
     @Column()

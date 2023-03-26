@@ -6,7 +6,6 @@ import java.util.Iterator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.excepciones.*;
 import com.example.demo.models.ConsultaInicial;
 import com.example.demo.repositories.ConsultaInicialRepository;
 
@@ -35,17 +34,8 @@ public class ConsultaInicialService {
     }
 
     public ConsultaInicial guardarConsulta(ConsultaInicial consulta) {
-        try {
-            ConsultaInicial con = _ConsultaInicialRepository.save(consulta);
-            return con;
-        } catch (Conflict con) {
-            throw con;
-        } catch (BadRequestException bad) {
-            throw bad;
-        } catch (Exception e) {
-            throw e;
-        }
-
+        ConsultaInicial con = _ConsultaInicialRepository.save(consulta);
+        return con;
     }
 
     public ConsultaInicial obtenerPorId(Long id) {
@@ -62,15 +52,7 @@ public class ConsultaInicialService {
     }
 
     public boolean eliminarConsulta(Long id) {
-        try {
-            _ConsultaInicialRepository.deleteById(id);
-            return true;
-        } catch (Conflict con) {
-            throw con;
-        } catch (BadRequestException bad) {
-            throw bad;
-        } catch (Exception e) {
-            throw e;
-        }
+        _ConsultaInicialRepository.deleteById(id);
+        return true;
     }
 }

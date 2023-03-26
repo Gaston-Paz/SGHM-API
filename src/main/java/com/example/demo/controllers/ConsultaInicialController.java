@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.services.ConsultaInicialService;
+import com.example.demo.excepciones.BadRequestException;
 import com.example.demo.models.ConsultaInicial;
 
 @RestController
@@ -22,14 +23,25 @@ public class ConsultaInicialController {
     ConsultaInicialService _ConsultaInicialService;
 
     @GetMapping
-    public ArrayList<ConsultaInicial> obtenerAntecedentes() {
-        ArrayList<ConsultaInicial> lista = _ConsultaInicialService.obtenerConsultas();
-        return lista;
+    public ArrayList<ConsultaInicial> obtenerConsultas() {
+        try {
+            ArrayList<ConsultaInicial> lista = _ConsultaInicialService.obtenerConsultas();
+            return lista;
+        } catch (Exception e) {
+            throw new BadRequestException(
+                    "No se pudieron obtener las Consultas Iniciales. Si persiste el error comuníquese con el Administrador");
+        }
     }
 
     @GetMapping("/{id}")
     public ConsultaInicial obtenerPorId(@PathVariable("id") Long id) {
-        return _ConsultaInicialService.obtenerPorId(id);
+        try {
+            return _ConsultaInicialService.obtenerPorId(id);
+
+        } catch (Exception e) {
+            throw new BadRequestException(
+                    "No se pudo obtener la Consulta Inicial. Si persiste el error comuníquese con el Administrador");
+        }
     }
 
     @PostMapping(path = "/actualizar")
