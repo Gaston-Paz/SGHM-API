@@ -60,7 +60,7 @@ public class PacienteController {
             this._TratamientoService.guardarTratamiento(altaPaciente.getTratamiento());
             return paciente;
         } catch (Exception e) {
-            throw e;
+            throw new BadRequestException("Verifique haber completado todos los campos obligatorios");
         }
     }
 
