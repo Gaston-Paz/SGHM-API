@@ -1,5 +1,6 @@
 package com.example.demo.controllers;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.excepciones.BadRequestException;
 import com.example.demo.models.Estudio;
+import com.example.demo.models.LogError;
 import com.example.demo.services.EstudioService;
 import com.example.demo.services.PacienteService;
 
@@ -25,10 +27,11 @@ public class EstudioController {
 
     @Transactional
     @GetMapping
-    public ArrayList<Estudio> obtenerEstudios() {
+    public ArrayList<Estudio> obtenerEstudios() throws IOException {
         try {
             return _EstudioService.obtenerEstudios();
         } catch (Exception e) {
+            LogError logError = new LogError(e, "Obtener Estudios");
             throw new BadRequestException(
                     "No se pudieron obtener los Estudios. Si persiste el error comuníquese con el Administrador");
         }
@@ -49,6 +52,7 @@ public class EstudioController {
             nuevo.setNombreArchivo(nombre);
             _EstudioService.guardarEstudio(nuevo);
         } catch (Exception e) {
+            LogError logError = new LogError(e, "Guardar Estudio");
             throw e;
         }
 

@@ -1,5 +1,6 @@
 package com.example.demo.controllers;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Optional;
 import jakarta.transaction.Transactional;
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.demo.excepciones.BadRequestException;
+import com.example.demo.models.LogError;
 import com.example.demo.models.Tratamiento;
 import com.example.demo.services.TratamientoService;
 
@@ -18,21 +20,23 @@ public class TratamientoController {
     TratamientoService _TratamientoService;
 
     @GetMapping
-    public ArrayList<Tratamiento> obtenerTratamiento() {
+    public ArrayList<Tratamiento> obtenerTratamiento() throws IOException {
         try {
             ArrayList<Tratamiento> lista = _TratamientoService.obtenerTratamientos();
             return lista;
         } catch (Exception e) {
+            LogError logError = new LogError(e, "Obtenter Tratamientos");
             throw new BadRequestException(
                     "No se pudieron obtener los Tratamientos. Si persiste el error comuníquese con el Administrador");
         }
     }
 
     @GetMapping("/{id}")
-    public Optional<Tratamiento> obtenerPorId(@PathVariable("id") Long id) {
+    public Optional<Tratamiento> obtenerPorId(@PathVariable("id") Long id) throws IOException {
         try {
             return _TratamientoService.obtenerPorId(id);
         } catch (Exception e) {
+            LogError logError = new LogError(e, "Obtenter Tratamiento por Id");
             throw new BadRequestException(
                     "No se pudo obtener el Tratamiento. Si persiste el error comuníquese con el Administrador");
         }
@@ -45,6 +49,7 @@ public class TratamientoController {
             tratamiento = this._TratamientoService.guardarTratamiento(tratamiento);
             return tratamiento;
         } catch (Exception e) {
+            LogError logError = new LogError(e, "Guardar Tratamiento");
             throw e;
         }
     }

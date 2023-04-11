@@ -1,5 +1,6 @@
 package com.example.demo.controllers;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -11,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.excepciones.BadRequestException;
 import com.example.demo.models.AltaPaciente;
+import com.example.demo.models.LogError;
 import com.example.demo.models.Paciente;
 import com.example.demo.services.AntecedenteService;
 import com.example.demo.services.ConsultaInicialService;
@@ -38,10 +40,11 @@ public class PacienteController {
     TratamientoService _TratamientoService;
 
     @GetMapping
-    public ArrayList<Paciente> obtenerPacientes() {
+    public ArrayList<Paciente> obtenerPacientes() throws IOException {
         try {
             return _pacienteService.obtenerPacientes();
         } catch (Exception e) {
+            LogError logError = new LogError(e, "Obtener Pacientes");
             throw new BadRequestException(
                     "No se pudieron obtener los Pacientes. Si persiste el error comuníquese con el Administrador");
         }
@@ -60,6 +63,7 @@ public class PacienteController {
             this._TratamientoService.guardarTratamiento(altaPaciente.getTratamiento());
             return paciente;
         } catch (Exception e) {
+            LogError logError = new LogError(e, "Guardar Paciente");
             throw new BadRequestException("Verifique haber completado todos los campos obligatorios");
         }
     }
@@ -70,37 +74,47 @@ public class PacienteController {
             Paciente paciente = this._pacienteService.guardarPaciente(paciene);
             return paciente;
         } catch (Exception e) {
+            LogError logError = new LogError(e, "Actualizar Paciente");
             throw e;
         }
     }
 
     @GetMapping("/{id}")
-    public Optional<Paciente> obtenerPorId(@PathVariable("id") Long id) {
+    public Optional<Paciente> obtenerPorId(@PathVariable("id") Long id) throws IOException {
         try {
             return _pacienteService.obtenerPorId(id);
         } catch (Exception e) {
+            LogError logError = new LogError(e, "Obtener Paciente por Id");
             throw new BadRequestException(
                     "No se pudo obtener el Paciente. Si persiste el error comuníquese con el Administrador");
         }
     }
 
     @GetMapping("porNombre/{Nombre}")
-    public ArrayList<Paciente> obtenerPorNombre(@PathVariable("Nombre") String Nombre) {
+    public ArrayList<Paciente> obtenerPorNombre(@PathVariable("Nombre") String Nombre) throws IOException {
         try {
             return _pacienteService.obtenerPorNombre(Nombre);
         } catch (Exception e) {
+            LogError logError = new LogError(e, "Obtener Paciente por Nombre");
             throw new BadRequestException(
                     "No se pudo obtener los Pacientes. Si persiste el error comuníquese con el Administrador");
         }
     }
 
     @DeleteMapping(path = "/{id}")
-    public String eliminarPaciente(@PathVariable("id") Long id) {
-        boolean ok = _pacienteService.eliminarUsuario(id);
-        if (ok)
-            return "Se eliminó el usuario con Id: " + id;
-        else
-            return "No se pudo eliminar el usuario con Id: " + id;
+    public String eliminarPaciente(@PathVariable("id") Long id) throws IOException {
+        try {
+            boolean ok = _pacienteService.eliminarUsuario(id);
+            if (ok)
+                return "Se eliminó el usuario con Id: " + id;
+            else
+                return "No se pudo eliminar el usuario con Id: " + id;
+        } catch (Exception e) {
+            // TODO: handle exception
+            LogError logError = new LogError(e, "Eliminar Paciente");
+            throw e;
+        }
+
     }
 
     @PostMapping("/{idPaciente}")
@@ -113,6 +127,7 @@ public class PacienteController {
             paciente.get().setFotoPerfil(fotoBytes);
             _pacienteService.guardarPaciente(paciente.get());
         } catch (Exception e) {
+            LogError logError = new LogError(e, "Obtenter Paciente por Id");
             throw e;
         }
 

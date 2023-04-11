@@ -1,5 +1,6 @@
 package com.example.demo.controllers;
 
+import java.io.IOException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +14,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.example.demo.excepciones.BadRequestException;
 import com.example.demo.excepciones.Conflict;
-import com.example.demo.excepciones.Error;
+import com.example.demo.models.LogError;
 import com.example.demo.models.Recuperacion;
 import com.example.demo.models.Recupero;
 import com.example.demo.models.Usuario;
@@ -40,7 +42,7 @@ public class MailController {
 
     @PostMapping(path = "{mail}")
     @Transactional
-    public ResponseEntity<?> EnviarCodigo(@PathVariable("mail") String mail) {
+    public ResponseEntity<?> EnviarCodigo(@PathVariable("mail") String mail) throws IOException {
         try {
             Optional<Usuario> usuario = _usuarioService.ObtenerUsuario(mail);
             if (!usuario.isPresent()) {
@@ -49,25 +51,27 @@ public class MailController {
             }
             return _mailService.EnviarMail(mail, usuario.get());
         } catch (Exception e) {
-            Conflict err = new Conflict(e.getMessage());
-            throw err;
+            LogError logError = new LogError(e, "Enviar Código de Recuperación");
+            throw new BadRequestException(e.getMessage());
         }
 
     }
 
     @PostMapping()
     @Transactional
-    public ResponseEntity<?> RecuperarContraseña(@RequestBody Recupero recuperacion) {
+    public ResponseEntity<?> RecuperarContraseña(@RequestBody Recupero recuperacion) throws IOException {
         try {
             Optional<Usuario> usuario = _usuarioService.ObtenerUsuario(recuperacion.getEmail());
             if (!usuario.isPresent()) {
-                Conflict con = new Conflict("El email ingresado no corresponde a ningún usuario.");
+                BadRequestException con = new BadRequestException(
+                        "El email ingresado no corresponde a ningún usuario.");
                 throw con;
             }
 
             Recuperacion recu = _RecuperacionService.obtenerPorEmail(recuperacion.getEmail());
             if (recu == null) {
-                Conflict con = new Conflict("El email ingresado no tiene ningún código de recuperacion activo.");
+                BadRequestException con = new BadRequestException(
+                        "El email ingresado no tiene ningún código de recuperacion activo.");
                 throw con;
             }
 
@@ -77,11 +81,13 @@ public class MailController {
                 usuario.get().setPassword((new BCryptPasswordEncoder().encode(recuperacion.getPassword())));
                 _usuarioService.guardarUsuario(usuario.get(), true);
             } else {
-                Conflict con = new Conflict("El código de recuperación no coincide. Vuelva a solicitarlo.");
+                BadRequestException con = new BadRequestException(
+                        "El código de recuperación no coincide. Vuelva a solicitarlo.");
                 throw con;
             }
             return new ResponseEntity<>(true, HttpStatus.OK);
         } catch (Exception e) {
+            LogError logError = new LogError(e, "Recuperar Contraseña");
             throw e;
         }
 
