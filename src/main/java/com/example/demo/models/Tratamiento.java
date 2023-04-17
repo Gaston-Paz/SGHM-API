@@ -1,10 +1,14 @@
 package com.example.demo.models;
 
 import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "Tratamientos")
+@JsonIgnoreProperties({ "paciente" })
 public class Tratamiento {
 
     @Id
@@ -12,8 +16,8 @@ public class Tratamiento {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long IdTratamiento;
 
-    @JoinColumn(name = "id_paciente")
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "paciente_id", nullable = false)
     private Paciente paciente;
 
     @Column(nullable = false)
@@ -45,6 +49,12 @@ public class Tratamiento {
 
     @Column()
     private Date ProximoTurnoIndicado;
+
+    private long pacienteID;
+
+    public long getPacienteID() {
+        return pacienteID;
+    }
 
     public String getSugerencias() {
         return Sugerencias;
@@ -88,6 +98,10 @@ public class Tratamiento {
 
     public String getSedestacion() {
         return Sedestacion;
+    }
+
+    public long getPacienteId() {
+        return this.paciente.getIdPaciente();
     }
 
     public String getTrianguloDeTalla() {

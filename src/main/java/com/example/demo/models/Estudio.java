@@ -2,18 +2,21 @@ package com.example.demo.models;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "Estudios")
+@JsonIgnoreProperties({ "paciente" })
 public class Estudio {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true, nullable = false)
     private long IdEstudio;
 
-    @JoinColumn(name = "id_paciente")
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "paciente_id", nullable = false)
     private Paciente paciente;
 
     @Column(length = Integer.MAX_VALUE, nullable = false)
@@ -25,8 +28,15 @@ public class Estudio {
     @Column(nullable = false)
     private String NombreArchivo;
 
+    @Column(nullable = false)
+    private String Tipo;
+
     public Estudio() {
         this.Fecha = new Date(System.currentTimeMillis());
+    }
+
+    public String getTipo() {
+        return Tipo;
     }
 
     public String getNombreArchivo() {
@@ -51,6 +61,14 @@ public class Estudio {
 
     public void setFecha(Date fecha) {
         Fecha = fecha;
+    }
+
+    public void setTipo(String tipo) {
+        Tipo = tipo;
+    }
+
+    public long getPacienteId() {
+        return this.paciente.getIdPaciente();
     }
 
     public void setNombreArchivo(String nombreArchivo) {

@@ -1,11 +1,16 @@
 package com.example.demo.models;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "Pacientes")
+@JsonIgnoreProperties({ "consultaInicial", "antecedente", "tratamientos", "estudios" })
 public class Paciente {
 
     @Id
@@ -46,17 +51,29 @@ public class Paciente {
     @Column(length = Integer.MAX_VALUE)
     private byte[] FotoPerfil;
 
-    @OneToOne(mappedBy = "paciente", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "consultaInicial_id", referencedColumnName = "id")
     private ConsultaInicial consultaInicial;
 
-    @OneToOne(mappedBy = "paciente", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "antecedente_id", referencedColumnName = "id")
     private Antecedente antecedente;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Tratamiento tratamiento;
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "paciente_id")
+    private List<Tratamiento> tratamientos = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Estudio estudio;
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "paciente_id")
+    private List<Estudio> estudios = new ArrayList<>();
+
+    public void setAntecedente(Antecedente antecedente) {
+        this.antecedente = antecedente;
+    }
+
+    public void setConsultaInicial(ConsultaInicial consultaInicial) {
+        this.consultaInicial = consultaInicial;
+    }
 
     public String getApellido() {
         return Apellido;
@@ -136,6 +153,14 @@ public class Paciente {
 
     public String getNombre() {
         return Nombre;
+    }
+
+    public Antecedente getAntecedente() {
+        return antecedente;
+    }
+
+    public ConsultaInicial getConsultaInicial() {
+        return consultaInicial;
     }
 
     public String getOcupacion() {

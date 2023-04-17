@@ -12,6 +12,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.excepciones.BadRequestException;
 import com.example.demo.models.AltaPaciente;
+import com.example.demo.models.Antecedente;
+import com.example.demo.models.ConsultaInicial;
 import com.example.demo.models.LogError;
 import com.example.demo.models.Paciente;
 import com.example.demo.services.AntecedenteService;
@@ -55,12 +57,21 @@ public class PacienteController {
     public Paciente guardarPaciente(@RequestBody AltaPaciente altaPaciente) throws Exception {
         try {
             Paciente paciente = this._pacienteService.guardarPaciente(altaPaciente.getPaciente());
+
             altaPaciente.getConsultaInicial().setPaciente(paciente);
-            this._ConsultaInicialService.guardarConsulta(altaPaciente.getConsultaInicial());
+            ConsultaInicial consulta = this._ConsultaInicialService.guardarConsulta(altaPaciente.getConsultaInicial());
+
             altaPaciente.getAntecedente().setPaciente(paciente);
-            this._AntecedenteService.guardarAntecedente(altaPaciente.getAntecedente());
+            Antecedente antecedente = this._AntecedenteService.guardarAntecedente(altaPaciente.getAntecedente());
+
+            paciente.setAntecedente(antecedente);
+            paciente.setConsultaInicial(consulta);
+            this._pacienteService.actualizarPaciente(paciente);
+
             altaPaciente.getTratamiento().setPaciente(paciente);
-            this._TratamientoService.guardarTratamiento(altaPaciente.getTratamiento());
+            this._TratamientoService.guardarTratamiento(altaPaciente.getTratamiento(),
+                    altaPaciente.getConsultaInicial());
+
             return paciente;
         } catch (Exception e) {
             LogError logError = new LogError(e, "Guardar Paciente");
@@ -69,10 +80,9 @@ public class PacienteController {
     }
 
     @PostMapping(path = "/actualizar")
-    public Paciente actualizarPaciente(@RequestBody Paciente paciene) throws Exception {
+    public Paciente actualizarPaciente(@RequestBody Paciente paciente) throws Exception {
         try {
-            Paciente paciente = this._pacienteService.guardarPaciente(paciene);
-            return paciente;
+            return this._pacienteService.actualizarPaciente(paciente);
         } catch (Exception e) {
             LogError logError = new LogError(e, "Actualizar Paciente");
             throw e;

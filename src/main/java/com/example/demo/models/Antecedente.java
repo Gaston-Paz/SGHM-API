@@ -10,10 +10,9 @@ public class Antecedente {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idAntecedente;
+    private Long id;
 
-    @JoinColumn(name = "id_paciente", unique = true)
-    @OneToOne()
+    @OneToOne(mappedBy = "antecedente", cascade = CascadeType.ALL)
     private Paciente paciente;
 
     @Column(length = Integer.MAX_VALUE)
@@ -135,7 +134,7 @@ public class Antecedente {
     }
 
     public Long getIdAntecedente() {
-        return idAntecedente;
+        return id;
     }
 
     public String getFuma() {
@@ -295,7 +294,7 @@ public class Antecedente {
     }
 
     public void setIdAntecedente(Long idAntecedente) {
-        this.idAntecedente = idAntecedente;
+        this.id = idAntecedente;
     }
 
     public void setAccidentes(String accidentes) {

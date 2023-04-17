@@ -37,9 +37,10 @@ public class EstudioController {
         }
     }
 
-    @PostMapping("/{idPaciente}/{nombre}")
+    @PostMapping("/{idPaciente}/{nombre}/{tipo}")
     public void guardarEstudio(@RequestParam("estudio") MultipartFile estudio,
-            @PathVariable("idPaciente") long idPaciente, @PathVariable("nombre") String nombre)
+            @PathVariable("idPaciente") long idPaciente, @PathVariable("nombre") String nombre,
+            @PathVariable("tipo") String tipo)
             throws Exception {
         try {
             Estudio nuevo = new Estudio();
@@ -50,6 +51,7 @@ public class EstudioController {
             var estudioBytes = estudio.getBytes();
             nuevo.setEstudio(estudioBytes);
             nuevo.setNombreArchivo(nombre);
+            nuevo.setTipo(tipo);
             _EstudioService.guardarEstudio(nuevo);
         } catch (Exception e) {
             LogError logError = new LogError(e, "Guardar Estudio");

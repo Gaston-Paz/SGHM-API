@@ -10,10 +10,9 @@ public class ConsultaInicial {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idConsulta;
+    private Long id;
 
-    @JoinColumn(name = "id_paciente", unique = true)
-    @OneToOne()
+    @OneToOne(mappedBy = "consultaInicial", cascade = CascadeType.ALL)
     private Paciente paciente;
 
     @Column(nullable = false)
@@ -57,7 +56,7 @@ public class ConsultaInicial {
     }
 
     public Long getIdConsulta() {
-        return idConsulta;
+        return id;
     }
 
     public Date getFechaCovid() {
@@ -133,7 +132,7 @@ public class ConsultaInicial {
     }
 
     public void setIdConsulta(Long idConsulta) {
-        this.idConsulta = idConsulta;
+        this.id = idConsulta;
     }
 
     public void setCovid(boolean covid) {

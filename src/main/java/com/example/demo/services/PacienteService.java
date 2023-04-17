@@ -7,13 +7,22 @@ import com.example.demo.excepciones.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.models.Antecedente;
 import com.example.demo.models.Paciente;
 import com.example.demo.repositories.PacienteRepository;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class PacienteService {
     @Autowired
     PacienteRepository _pacienteRepository;
+
+    @Autowired
+    AntecedenteService _AntecedenteService;
+
+    @Autowired
+    ConsultaInicialService _ConsultaInicialService;
 
     public ArrayList<Paciente> obtenerPacientes() {
         return (ArrayList<Paciente>) _pacienteRepository.findAll();
@@ -39,11 +48,23 @@ public class PacienteService {
 
     public Paciente actualizarPaciente(Paciente paciente) {
         try {
-            return _pacienteRepository.save(paciente);
-        } catch (Conflict con) {
-            throw con;
-        } catch (BadRequestException bad) {
-            throw bad;
+            Optional<Paciente> pacienteExistenteOptional = _pacienteRepository.findById(paciente.getIdPaciente());
+            if (pacienteExistenteOptional.isPresent()) {
+                Paciente pacienteExistente = pacienteExistenteOptional.get();
+                pacienteExistente.setNombre(paciente.getNombre());
+                pacienteExistente.setApellido(paciente.getApellido());
+                pacienteExistente.setCelular(paciente.getCelular());
+                pacienteExistente.setDeParte(paciente.getDeParte());
+                pacienteExistente.setEmail(paciente.getEmail());
+                pacienteExistente.setFechaNacimiento(paciente.getFechaNacimiento());
+                pacienteExistente.setLocalidad(paciente.getLocalidad());
+                pacienteExistente.setNacio(paciente.getNacio());
+                pacienteExistente.setOcupacion(paciente.getOcupacion());
+                pacienteExistente.setOtros(paciente.getOtros());
+                return _pacienteRepository.save(pacienteExistente);
+            } else {
+                throw new EntityNotFoundException("No se encontró un paciente con el ID especificado.");
+            }
         } catch (Exception e) {
             throw e;
         }

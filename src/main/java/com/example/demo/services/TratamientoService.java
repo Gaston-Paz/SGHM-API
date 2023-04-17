@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import com.example.demo.models.*;
 import com.example.demo.repositories.*;
 import com.example.demo.excepciones.*;
@@ -23,7 +25,8 @@ public class TratamientoService {
         return (ArrayList<Tratamiento>) _TratamientoRepository.findAll();
     }
 
-    public Tratamiento guardarTratamiento(Tratamiento tratamiento) {
+    public Tratamiento guardarTratamiento(Tratamiento tratamiento,
+            @RequestParam(required = false) ConsultaInicial consulta) {
         try {
             ArrayList<Tratamiento> tratamientosPaciente = this.obtenerPaciente(tratamiento.getPaciente());
             boolean existe = existeTratamiento(tratamientosPaciente, tratamiento);
@@ -31,13 +34,15 @@ public class TratamientoService {
                 throw new BadRequestException("Ya existe un tratamiento realizado en esta fecha para el paciente.");
             }
 
-            ConsultaInicial consultaInicial = _ConsultaInicialRepository.findByPaciente(tratamiento.getPaciente());
-
-            if (consultaInicial.getFecha().compareTo(tratamiento.getFecha()) > 0) {
-                throw new BadRequestException(
-                        "La fecha del nuevo tratamiento no puede ser anterior a la fecha de la primera consulta.");
+            if (consulta == null) {
+                Optional<ConsultaInicial> consultaInicial = _ConsultaInicialRepository
+                        .findById(tratamiento.getPacienteID());
+                if (consultaInicial.get().getFecha().compareTo(tratamiento.getFecha()) > 0) {
+                    throw new BadRequestException(
+                            "La fecha del nuevo tratamiento no puede ser anterior a la fecha de la primera consulta.");
+                }
+                tratamiento.setPaciente(consultaInicial.get().getPaciente());
             }
-
             tratamiento = _TratamientoRepository.save(tratamiento);
             return tratamiento;
         } catch (Conflict con) {

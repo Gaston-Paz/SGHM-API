@@ -42,7 +42,7 @@ public class AntecedenteService {
         Iterator<Antecedente> it = lista.iterator();
         while (it.hasNext()) {
             Antecedente aux = it.next();
-            if (id == aux.getPaciente().getIdPaciente()) {
+            if (id == aux.getIdAntecedente()) {
                 return aux;
             }
 

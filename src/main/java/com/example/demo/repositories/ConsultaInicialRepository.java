@@ -8,5 +8,5 @@ import com.example.demo.models.Paciente;
 
 @Repository
 public interface ConsultaInicialRepository extends CrudRepository<ConsultaInicial, Long> {
-    ConsultaInicial findByPaciente(Paciente paciente);
+    ConsultaInicial findByPaciente(long id);
 }

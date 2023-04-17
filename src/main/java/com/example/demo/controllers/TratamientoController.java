@@ -20,6 +20,7 @@ public class TratamientoController {
     TratamientoService _TratamientoService;
 
     @GetMapping
+    @ResponseBody
     public ArrayList<Tratamiento> obtenerTratamiento() throws IOException {
         try {
             ArrayList<Tratamiento> lista = _TratamientoService.obtenerTratamientos();
@@ -46,7 +47,7 @@ public class TratamientoController {
     @PostMapping
     public Tratamiento guardarTratamiento(@RequestBody Tratamiento tratamiento) throws Exception {
         try {
-            tratamiento = this._TratamientoService.guardarTratamiento(tratamiento);
+            tratamiento = this._TratamientoService.guardarTratamiento(tratamiento, null);
             return tratamiento;
         } catch (Exception e) {
             LogError logError = new LogError(e, "Guardar Tratamiento");

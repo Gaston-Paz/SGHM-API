@@ -27,12 +27,13 @@ public class TokenUtils {
 
     private final static Long ACCES_TOKEN_VALIDITY_SECONDS = (long) 36000;
 
-    public static String createToken(String nombre, String email) {
+    public static String createToken(String nombre, String email, String rol) {
 
         long expirationTime = ACCES_TOKEN_VALIDITY_SECONDS * 1000;
         Date expirationDate = new Date(System.currentTimeMillis() + expirationTime);
 
         Map<String, Object> extra = new HashMap<>();
+        extra.put("rol", rol);
         extra.put("nombre", nombre);
 
         return Jwts.builder()
@@ -52,8 +53,9 @@ public class TokenUtils {
                     .getBody();
 
             String email = claims.getSubject();
+            String rol = claims.toString().split("rol=")[1].split("}")[0];
 
-            return new UsernamePasswordAuthenticationToken(email, null, Collections.emptyList());
+            return new UsernamePasswordAuthenticationToken(email, rol, Collections.emptyList());
         } catch (JwtException e) {
             return null;
         }

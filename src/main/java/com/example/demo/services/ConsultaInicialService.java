@@ -43,7 +43,7 @@ public class ConsultaInicialService {
         Iterator<ConsultaInicial> it = lista.iterator();
         while (it.hasNext()) {
             ConsultaInicial aux = it.next();
-            if (id == aux.getPaciente().getIdPaciente()) {
+            if (id == aux.getIdConsulta()) {
                 return aux;
             }
 
