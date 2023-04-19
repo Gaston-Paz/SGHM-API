@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.models.ConsultaInicial;
+import com.example.demo.models.Paciente;
 import com.example.demo.repositories.ConsultaInicialRepository;
 
 @Service
@@ -51,8 +52,7 @@ public class ConsultaInicialService {
         return null;
     }
 
-    public boolean eliminarConsulta(Long id) {
-        _ConsultaInicialRepository.deleteById(id);
-        return true;
+    public void eliminarConsulta(Paciente paciente) {
+        _ConsultaInicialRepository.deleteAllByPaciente(paciente);
     }
 }

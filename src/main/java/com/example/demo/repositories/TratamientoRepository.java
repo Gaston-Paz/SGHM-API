@@ -11,4 +11,6 @@ import java.util.ArrayList;
 @Repository
 public interface TratamientoRepository extends CrudRepository<Tratamiento, Long> {
     ArrayList<Tratamiento> findAllByPaciente(Paciente paciente);
+
+    void deleteAllByPaciente(Paciente paciente);
 }

@@ -7,5 +7,5 @@ import com.example.demo.models.*;
 
 @Repository
 public interface EstudioRepository extends CrudRepository<Estudio, Long> {
-
+    void deleteAllByPaciente(Paciente paciente);
 }

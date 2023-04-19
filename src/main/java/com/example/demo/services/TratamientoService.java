@@ -83,17 +83,9 @@ public class TratamientoService {
         return _TratamientoRepository.findAllByPaciente(paciente);
     }
 
-    public boolean eliminarTratamiento(Long id) {
-        try {
-            _TratamientoRepository.deleteById(id);
-            return true;
-        } catch (Conflict con) {
-            throw con;
-        } catch (BadRequestException bad) {
-            throw bad;
-        } catch (Exception e) {
-            throw e;
-        }
+    public void eliminarTratamiento(Paciente paciente) {
+        _TratamientoRepository.deleteAllByPaciente(paciente);
+
     }
 
 }

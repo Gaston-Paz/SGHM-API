@@ -56,8 +56,8 @@ public class PacienteController {
     @PostMapping
     public Paciente guardarPaciente(@RequestBody AltaPaciente altaPaciente) throws Exception {
         try {
+            altaPaciente.getPaciente().setActivo(true);
             Paciente paciente = this._pacienteService.guardarPaciente(altaPaciente.getPaciente());
-
             altaPaciente.getConsultaInicial().setPaciente(paciente);
             ConsultaInicial consulta = this._ConsultaInicialService.guardarConsulta(altaPaciente.getConsultaInicial());
 
@@ -111,14 +111,13 @@ public class PacienteController {
         }
     }
 
-    @DeleteMapping(path = "/{id}")
-    public String eliminarPaciente(@PathVariable("id") Long id) throws IOException {
+    @Transactional
+    @PostMapping(path = "/eliminar")
+    public ArrayList<Paciente> eliminarPaciente(@RequestBody Paciente paciente) throws IOException {
         try {
-            boolean ok = _pacienteService.eliminarUsuario(id);
-            if (ok)
-                return "Se eliminó el usuario con Id: " + id;
-            else
-                return "No se pudo eliminar el usuario con Id: " + id;
+            paciente.setActivo(false);
+            this._pacienteService.actualizarPaciente(paciente);
+            return _pacienteService.obtenerPacientes();
         } catch (Exception e) {
             // TODO: handle exception
             LogError logError = new LogError(e, "Eliminar Paciente");

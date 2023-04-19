@@ -19,6 +19,9 @@ public class Paciente {
     private long IdPaciente;
 
     @Column(nullable = false)
+    private boolean Activo;
+
+    @Column(nullable = false)
     private String Nombre;
 
     @Column(nullable = false)
@@ -51,19 +54,19 @@ public class Paciente {
     @Column(length = Integer.MAX_VALUE)
     private byte[] FotoPerfil;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "consultaInicial_id", referencedColumnName = "id")
     private ConsultaInicial consultaInicial;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "antecedente_id", referencedColumnName = "id")
     private Antecedente antecedente;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "paciente_id")
     private List<Tratamiento> tratamientos = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "paciente_id")
     private List<Estudio> estudios = new ArrayList<>();
 
@@ -79,8 +82,16 @@ public class Paciente {
         return Apellido;
     }
 
+    public void setActivo(boolean activo) {
+        Activo = activo;
+    }
+
     public String getCelular() {
         return Celular;
+    }
+
+    public boolean getActivo() {
+        return Activo;
     }
 
     public String getDeParte() {

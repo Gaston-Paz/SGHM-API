@@ -37,16 +37,8 @@ public class EstudioService {
         return max;
     }
 
-    public boolean eliminarEstudio(Long id) {
-        try {
-            _EstudioRepository.deleteById(id);
-            return true;
-        } catch (Conflict con) {
-            throw con;
-        } catch (BadRequestException bad) {
-            throw bad;
-        } catch (Exception e) {
-            throw e;
-        }
+    public void eliminarEstudio(Paciente paciente) {
+        _EstudioRepository.deleteAllByPaciente(paciente);
+
     }
 }

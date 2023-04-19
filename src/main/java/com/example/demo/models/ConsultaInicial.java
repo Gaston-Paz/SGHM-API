@@ -12,7 +12,7 @@ public class ConsultaInicial {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(mappedBy = "consultaInicial", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "consultaInicial", cascade = CascadeType.ALL, orphanRemoval = true)
     private Paciente paciente;
 
     @Column(nullable = false)

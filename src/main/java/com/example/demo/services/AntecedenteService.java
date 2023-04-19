@@ -50,8 +50,7 @@ public class AntecedenteService {
         return null;
     }
 
-    public boolean eliminarAntecedente(Long id) {
-        _AntecedenteRepository.deleteById(id);
-        return true;
+    public void eliminarAntecedente(Paciente paciente) {
+        _AntecedenteRepository.deleteAllByPaciente(paciente);
     }
 }

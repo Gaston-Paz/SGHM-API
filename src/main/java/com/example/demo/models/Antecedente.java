@@ -12,7 +12,7 @@ public class Antecedente {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(mappedBy = "antecedente", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "antecedente", cascade = CascadeType.ALL, orphanRemoval = true)
     private Paciente paciente;
 
     @Column(length = Integer.MAX_VALUE)

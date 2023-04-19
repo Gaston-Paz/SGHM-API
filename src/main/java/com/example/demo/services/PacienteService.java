@@ -25,7 +25,16 @@ public class PacienteService {
     ConsultaInicialService _ConsultaInicialService;
 
     public ArrayList<Paciente> obtenerPacientes() {
-        return (ArrayList<Paciente>) _pacienteRepository.findAll();
+        ArrayList<Paciente> lista = (ArrayList<Paciente>) _pacienteRepository.findAll();
+        ArrayList<Paciente> listaActiva = new ArrayList<Paciente>();
+        Iterator<Paciente> it = lista.iterator();
+        while (it.hasNext()) {
+            Paciente paciente = it.next();
+            if (paciente.getActivo()) {
+                listaActiva.add(paciente);
+            }
+        }
+        return listaActiva;
     }
 
     public Paciente guardarPaciente(Paciente paciente) throws Exception {
@@ -51,6 +60,7 @@ public class PacienteService {
             Optional<Paciente> pacienteExistenteOptional = _pacienteRepository.findById(paciente.getIdPaciente());
             if (pacienteExistenteOptional.isPresent()) {
                 Paciente pacienteExistente = pacienteExistenteOptional.get();
+                pacienteExistente.setActivo(paciente.getActivo());
                 pacienteExistente.setNombre(paciente.getNombre());
                 pacienteExistente.setApellido(paciente.getApellido());
                 pacienteExistente.setCelular(paciente.getCelular());
@@ -104,16 +114,8 @@ public class PacienteService {
         return existe;
     }
 
-    public boolean eliminarUsuario(Long id) {
-        try {
-            _pacienteRepository.deleteById(id);
-            return true;
-        } catch (Conflict con) {
-            throw con;
-        } catch (BadRequestException bad) {
-            throw bad;
-        } catch (Exception e) {
-            throw e;
-        }
+    public void deletePaciente(long id) {
+        Optional<Paciente> paciente = obtenerPorId(id);
+        _pacienteRepository.delete(paciente.get());
     }
 }
