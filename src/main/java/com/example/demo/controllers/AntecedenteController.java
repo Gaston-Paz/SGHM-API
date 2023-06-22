@@ -43,7 +43,7 @@ public class AntecedenteController {
     @PostMapping(path = "/actualizar")
     public Antecedente guardarAntecedente(@RequestBody Antecedente antecedente) throws Exception {
         try {
-            antecedente = this._AntecedenteService.guardarAntecedente(antecedente);
+            antecedente = this._AntecedenteService.actualizarAntecedente(antecedente);
             return antecedente;
         } catch (Exception e) {
             LogError logError = new LogError(e, "Actualizar Antecedentes");

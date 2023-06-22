@@ -2,18 +2,25 @@ package com.example.demo.services;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.models.ConsultaInicial;
 import com.example.demo.models.Paciente;
+import com.example.demo.models.Tratamiento;
 import com.example.demo.repositories.ConsultaInicialRepository;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class ConsultaInicialService {
     @Autowired
     ConsultaInicialRepository _ConsultaInicialRepository;
+
+    @Autowired
+    TratamientoService _TratamientoService;
 
     public ArrayList<ConsultaInicial> obtenerConsultas() {
         return (ArrayList<ConsultaInicial>) _ConsultaInicialRepository.findAll();
@@ -54,5 +61,41 @@ public class ConsultaInicialService {
 
     public void eliminarConsulta(Paciente paciente) {
         _ConsultaInicialRepository.deleteAllByPaciente(paciente);
+    }
+
+    public ConsultaInicial actualizarConsulta(ConsultaInicial consulta) {
+        try {
+            Optional<ConsultaInicial> consultaInicialExistenteOpcional = _ConsultaInicialRepository
+                    .findById(consulta.getIdConsulta());
+            if (consultaInicialExistenteOpcional.isPresent()) {
+                ConsultaInicial consultaInicialExistente = consultaInicialExistenteOpcional.get();
+                consultaInicialExistente.setActividadFisica(consulta.getActividadFisica());
+                consultaInicialExistente.setAntiguedad(consulta.getAntiguedad());
+                consultaInicialExistente.setAtenua(consulta.getAtenua());
+                consultaInicialExistente.setCaracteristica(consulta.getCaracteristica());
+                consultaInicialExistente.setCovid(consulta.getCovid());
+                consultaInicialExistente.setFecha(consulta.getFecha());
+                consultaInicialExistente.setFechaCovid(consulta.getFechaCovid());
+                consultaInicialExistente.setIdConsulta(consulta.getIdConsulta());
+                consultaInicialExistente.setIntensidad(consulta.getIntensidad());
+                consultaInicialExistente.setIrradiacion(consulta.getIrradiacion());
+                consultaInicialExistente.setLocalizacion(consulta.getLocalizacion());
+                consultaInicialExistente.setMotivo(consulta.getMotivo());
+                consultaInicialExistente.setOtros(consulta.getOtros());
+                consultaInicialExistente.setPaciente(consultaInicialExistenteOpcional.get().getPaciente());
+
+                // Tratamiento
+                Tratamiento tratamiento = _TratamientoService.obtenerPaciente(consultaInicialExistente.getPaciente())
+                        .get(0);
+                tratamiento.setMotivo(consultaInicialExistente.getMotivo());
+                _TratamientoService.actualizarTratamiento(tratamiento);
+
+                return _ConsultaInicialRepository.save(consultaInicialExistente);
+            } else {
+                throw new EntityNotFoundException("No se encontró una consulta inicial con el ID especificado.");
+            }
+        } catch (Exception e) {
+            throw e;
+        }
     }
 }

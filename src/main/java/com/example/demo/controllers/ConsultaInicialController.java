@@ -51,7 +51,7 @@ public class ConsultaInicialController {
     @PostMapping(path = "/actualizar")
     public ConsultaInicial guardarAntecedente(@RequestBody ConsultaInicial consultaInicial) throws Exception {
         try {
-            consultaInicial = this._ConsultaInicialService.guardarConsulta(consultaInicial);
+            consultaInicial = this._ConsultaInicialService.actualizarConsulta(consultaInicial);
             return consultaInicial;
         } catch (Exception e) {
             LogError logError = new LogError(e, "Actualizar Consultas Iniciales");

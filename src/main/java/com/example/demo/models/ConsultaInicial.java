@@ -9,7 +9,7 @@ import jakarta.persistence.*;
 public class ConsultaInicial {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    // @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToOne(mappedBy = "consultaInicial", cascade = CascadeType.ALL, orphanRemoval = true)

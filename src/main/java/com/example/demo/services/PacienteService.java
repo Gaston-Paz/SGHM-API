@@ -39,7 +39,7 @@ public class PacienteService {
 
     public Paciente guardarPaciente(Paciente paciente) throws Exception {
         if (PacienteExiste(paciente)) {
-            throw new Conflict(
+            throw new BadRequestException(
                     "Ya existe un paciente con esta combinación de Nombre, Apellido y E-mail: " + paciente.getNombre()
                             + ", " + paciente.getApellido() + " " + paciente.nacimientoToString());
         }

@@ -58,10 +58,13 @@ public class PacienteController {
         try {
             altaPaciente.getPaciente().setActivo(true);
             Paciente paciente = this._pacienteService.guardarPaciente(altaPaciente.getPaciente());
+            System.out.println(paciente.getIdPaciente());
             altaPaciente.getConsultaInicial().setPaciente(paciente);
+            altaPaciente.getConsultaInicial().setIdConsulta(paciente.getIdPaciente());
             ConsultaInicial consulta = this._ConsultaInicialService.guardarConsulta(altaPaciente.getConsultaInicial());
 
             altaPaciente.getAntecedente().setPaciente(paciente);
+            altaPaciente.getAntecedente().setIdAntecedente(paciente.getIdPaciente());
             Antecedente antecedente = this._AntecedenteService.guardarAntecedente(altaPaciente.getAntecedente());
 
             paciente.setAntecedente(antecedente);

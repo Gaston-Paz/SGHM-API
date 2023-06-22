@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.demo.models.*;
 import com.example.demo.repositories.*;
+
+import jakarta.persistence.EntityNotFoundException;
+
 import com.example.demo.excepciones.*;
 import java.util.Date;
 import java.util.Iterator;
@@ -88,4 +91,30 @@ public class TratamientoService {
 
     }
 
+    public Tratamiento actualizarTratamiento(Tratamiento tratamiento) {
+        try {
+            Optional<Tratamiento> tratamientoExitenteOpcional = _TratamientoRepository
+                    .findById(tratamiento.getIdTratamiento());
+
+            if (tratamientoExitenteOpcional.isPresent()) {
+                Tratamiento tratamientoExitente = tratamientoExitenteOpcional.get();
+                tratamientoExitente.setAlturaDeIliacos(tratamiento.getAlturaDeIliacos());
+                tratamientoExitente.setBarral(tratamiento.getBarral());
+                tratamientoExitente.setEsferas(tratamiento.getEsferas());
+                tratamientoExitente.setFecha(tratamiento.getFecha());
+                tratamientoExitente.setIdTratamiento(tratamiento.getIdTratamiento());
+                tratamientoExitente.setMotivo(tratamiento.getMotivo());
+                tratamientoExitente.setPaciente(tratamientoExitenteOpcional.get().getPaciente());
+                tratamientoExitente.setProximoTurnoIndicado(tratamiento.getProximoTurnoIndicado());
+                tratamientoExitente.setSedestacion(tratamiento.getSedestacion());
+                tratamientoExitente.setSugerencias(tratamiento.getSugerencias());
+                tratamientoExitente.setTrianguloDeTalla(tratamiento.getTrianguloDeTalla());
+                return _TratamientoRepository.save(tratamientoExitente);
+            } else {
+                throw new EntityNotFoundException("No se encontró un tratamiento con el ID especificado.");
+            }
+        } catch (Exception e) {
+            throw e;
+        }
+    }
 }

@@ -10,9 +10,9 @@ import java.util.Date;
 
 public class LogError {
     // Dev
-    private final String Path = "C:\\Log-SGHC\\";
+    // private final String Path = "C:\\Log-SGHC\\";
     // Prod
-    // private final String Path = "/home/SGHM-API/Log-SGHC/";
+    private final String Path = "/home/SGHM-API/Log-SGHC/";
     String formatoFecha = "dd-MM-yyyy";
     SimpleDateFormat formateadorFecha = new SimpleDateFormat(formatoFecha);
 

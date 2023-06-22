@@ -8,8 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.demo.excepciones.BadRequestException;
+import com.example.demo.models.ConsultaInicial;
 import com.example.demo.models.LogError;
 import com.example.demo.models.Tratamiento;
+import com.example.demo.services.ConsultaInicialService;
 import com.example.demo.services.TratamientoService;
 
 @RestController
@@ -18,6 +20,9 @@ import com.example.demo.services.TratamientoService;
 public class TratamientoController {
     @Autowired
     TratamientoService _TratamientoService;
+
+    @Autowired
+    ConsultaInicialService _ConsultaService;
 
     @GetMapping
     @ResponseBody
@@ -48,6 +53,13 @@ public class TratamientoController {
     public Tratamiento guardarTratamiento(@RequestBody Tratamiento tratamiento) throws Exception {
         try {
             tratamiento = this._TratamientoService.guardarTratamiento(tratamiento, null);
+            ArrayList<Tratamiento> tratamientos = _TratamientoService.obtenerPaciente(tratamiento.getPaciente());
+            if (tratamiento.getIdTratamiento() == tratamientos.get(0).getIdTratamiento()) {
+                ConsultaInicial consulta = _ConsultaService
+                        .obtenerPorId(tratamiento.getPaciente().getConsultaInicial().getIdConsulta());
+                consulta.setMotivo(tratamiento.getMotivo());
+                _ConsultaService.actualizarConsulta(consulta);
+            }
             return tratamiento;
         } catch (Exception e) {
             LogError logError = new LogError(e, "Guardar Tratamiento");
