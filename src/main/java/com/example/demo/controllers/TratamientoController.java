@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import com.example.demo.excepciones.BadRequestException;
 import com.example.demo.models.ConsultaInicial;
 import com.example.demo.models.LogError;
+import com.example.demo.models.Paciente;
 import com.example.demo.models.Tratamiento;
 import com.example.demo.services.ConsultaInicialService;
 import com.example.demo.services.TratamientoService;
@@ -64,6 +65,17 @@ public class TratamientoController {
         } catch (Exception e) {
             LogError logError = new LogError(e, "Guardar Tratamiento");
             throw e;
+        }
+    }
+
+    @PatchMapping("/obtenerPorPaciente")
+    public ArrayList<Tratamiento> obtenerPorPaciente(@RequestBody Paciente paciente) throws IOException {
+        try {
+            return _TratamientoService.obtenerPaciente(paciente);
+        } catch (Exception e) {
+            LogError logError = new LogError(e, "Obtenter Tratamiento por Id");
+            throw new BadRequestException(
+                    "No se pudo obtener el Tratamiento. Si persiste el error comuníquese con el Administrador");
         }
     }
 

@@ -41,4 +41,8 @@ public class EstudioService {
         _EstudioRepository.deleteAllByPaciente(paciente);
 
     }
+
+    public ArrayList<Estudio> obtenerPaciente(Paciente paciente) {
+        return _EstudioRepository.findAllByPaciente(paciente);
+    }
 }

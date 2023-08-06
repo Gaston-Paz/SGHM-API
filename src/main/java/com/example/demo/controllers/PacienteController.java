@@ -129,20 +129,20 @@ public class PacienteController {
 
     }
 
-    @PostMapping("/{idPaciente}")
-    public void guardarFotos(@RequestParam("fotoPerfil") MultipartFile foto,
-            @PathVariable("idPaciente") long idPaciente)
-            throws Exception {
-        try {
-            Optional<Paciente> paciente = _pacienteService.obtenerPorId(idPaciente);
-            var fotoBytes = foto.getBytes();
-            paciente.get().setFotoPerfil(fotoBytes);
-            _pacienteService.guardarPaciente(paciente.get());
-        } catch (Exception e) {
-            LogError logError = new LogError(e, "Obtenter Paciente por Id");
-            throw e;
-        }
+    // @PostMapping("/{idPaciente}")
+    // public void guardarFotos(@RequestParam("fotoPerfil") MultipartFile foto,
+    // @PathVariable("idPaciente") long idPaciente)
+    // throws Exception {
+    // try {
+    // Optional<Paciente> paciente = _pacienteService.obtenerPorId(idPaciente);
+    // var fotoBytes = foto.getBytes();
+    // paciente.get().setFotoPerfil(fotoBytes);
+    // _pacienteService.guardarPaciente(paciente.get());
+    // } catch (Exception e) {
+    // LogError logError = new LogError(e, "Obtenter Paciente por Id");
+    // throw e;
+    // }
 
-    }
+    // }
 
 }

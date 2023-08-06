@@ -51,8 +51,8 @@ public class Paciente {
     @Column(nullable = false)
     private String Nacio;
 
-    @Column(length = Integer.MAX_VALUE)
-    private byte[] FotoPerfil;
+    // @Column(length = Integer.MAX_VALUE)
+    // private byte[] FotoPerfil;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "consultaInicial_id", referencedColumnName = "id")
@@ -146,9 +146,9 @@ public class Paciente {
         return FechaNacimiento;
     }
 
-    public byte[] getFotoPerfil() {
-        return FotoPerfil;
-    }
+    // public byte[] getFotoPerfil() {
+    // return FotoPerfil;
+    // }
 
     public long getIdPaciente() {
         return IdPaciente;
@@ -202,9 +202,9 @@ public class Paciente {
         Otros = otros;
     }
 
-    public void setFotoPerfil(byte[] fotoPerfil) {
-        FotoPerfil = fotoPerfil;
-    }
+    // public void setFotoPerfil(byte[] fotoPerfil) {
+    // FotoPerfil = fotoPerfil;
+    // }
 
     public void setIdPaciente(long idPaciente) {
         IdPaciente = idPaciente;

@@ -10,6 +10,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.demo.excepciones.BadRequestException;
 import com.example.demo.models.Estudio;
 import com.example.demo.models.LogError;
+import com.example.demo.models.Paciente;
+import com.example.demo.models.Tratamiento;
 import com.example.demo.services.EstudioService;
 import com.example.demo.services.PacienteService;
 
@@ -58,6 +60,17 @@ public class EstudioController {
             throw e;
         }
 
+    }
+
+    @PatchMapping("/obtenerPorPaciente")
+    public ArrayList<Estudio> obtenerPorPaciente(@RequestBody Paciente paciente) throws IOException {
+        try {
+            return _EstudioService.obtenerPaciente(paciente);
+        } catch (Exception e) {
+            LogError logError = new LogError(e, "Obtenter Tratamiento por Paciente");
+            throw new BadRequestException(
+                    "No se pudo obtener el Estudio. Si persiste el error comuníquese con el Administrador");
+        }
     }
 
 }
