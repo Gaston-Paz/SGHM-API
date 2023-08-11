@@ -51,7 +51,7 @@ public class ConsultaInicialService {
         Iterator<ConsultaInicial> it = lista.iterator();
         while (it.hasNext()) {
             ConsultaInicial aux = it.next();
-            if (id == aux.getIdConsulta()) {
+            if (id == aux.getIdConsulta().longValue()) {
                 return aux;
             }
 

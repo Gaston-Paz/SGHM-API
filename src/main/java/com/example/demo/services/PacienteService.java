@@ -6,9 +6,10 @@ import java.util.Optional;
 import com.example.demo.excepciones.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import java.util.Date;
 import com.example.demo.models.Antecedente;
 import com.example.demo.models.Paciente;
+import com.example.demo.models.PacienteSelector;
 import com.example.demo.repositories.PacienteRepository;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -117,5 +118,45 @@ public class PacienteService {
     public void deletePaciente(long id) {
         Optional<Paciente> paciente = obtenerPorId(id);
         _pacienteRepository.delete(paciente.get());
+    }
+
+    public ArrayList<PacienteSelector> GetPacientesFromSelector() {
+        ArrayList<Object[]> resultado = _pacienteRepository.getPacientesSelector();
+
+        ArrayList<PacienteSelector> lista = new ArrayList<>();
+        for (Object[] obj : resultado) {
+            PacienteSelector paciente = new PacienteSelector(
+                    ((Number) obj[0]).longValue(),
+                    (String) obj[1],
+                    (String) obj[2]);
+            lista.add(paciente);
+        }
+
+        return lista;
+    }
+
+    public ArrayList<Paciente> getPacientesPaginado(long pagina, String nombre) {
+        ArrayList<Object[]> resultado = _pacienteRepository.getPacientesPaginado(pagina, nombre);
+
+        ArrayList<Paciente> lista = new ArrayList<>();
+        for (Object[] obj : resultado) {
+            Paciente paciente = new Paciente(
+                    ((Number) obj[0]).longValue(),
+                    (boolean) obj[1],
+                    (String) obj[2],
+                    (String) obj[3],
+                    (String) obj[4],
+                    (String) obj[5],
+                    (Date) obj[6],
+                    (byte[]) obj[7],
+                    (String) obj[8],
+                    (String) obj[9],
+                    (String) obj[10],
+                    (String) obj[11],
+                    (String) obj[12]);
+            lista.add(paciente);
+        }
+
+        return lista;
     }
 }

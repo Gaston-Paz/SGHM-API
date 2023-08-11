@@ -51,8 +51,8 @@ public class Paciente {
     @Column(nullable = false)
     private String Nacio;
 
-    // @Column(length = Integer.MAX_VALUE)
-    // private byte[] FotoPerfil;
+    @Column(length = Integer.MAX_VALUE)
+    private byte[] FotoPerfil;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "consultaInicial_id", referencedColumnName = "id")
@@ -69,6 +69,23 @@ public class Paciente {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "paciente_id")
     private List<Estudio> estudios = new ArrayList<>();
+
+    public Paciente(long id, boolean activo, String apellido, String celular, String deParte, String email,
+            Date fechaNac, byte[] foto, String localidad, String nacio, String nombre, String ocupacion, String otros) {
+        this.setIdPaciente(id);
+        this.setActivo(activo);
+        this.setNombre(nombre);
+        this.setApellido(apellido);
+        this.setCelular(celular);
+        this.setDeParte(deParte);
+        this.setEmail(email);
+        this.setFechaNacimiento(fechaNac);
+        this.setFotoPerfil(foto);
+        this.setLocalidad(localidad);
+        this.setNacio(nacio);
+        this.setOcupacion(ocupacion);
+        this.setOtros(otros);
+    }
 
     public void setAntecedente(Antecedente antecedente) {
         this.antecedente = antecedente;
@@ -146,9 +163,9 @@ public class Paciente {
         return FechaNacimiento;
     }
 
-    // public byte[] getFotoPerfil() {
-    // return FotoPerfil;
-    // }
+    public byte[] getFotoPerfil() {
+        return FotoPerfil;
+    }
 
     public long getIdPaciente() {
         return IdPaciente;
@@ -202,9 +219,9 @@ public class Paciente {
         Otros = otros;
     }
 
-    // public void setFotoPerfil(byte[] fotoPerfil) {
-    // FotoPerfil = fotoPerfil;
-    // }
+    public void setFotoPerfil(byte[] fotoPerfil) {
+        FotoPerfil = fotoPerfil;
+    }
 
     public void setIdPaciente(long idPaciente) {
         IdPaciente = idPaciente;

@@ -88,14 +88,15 @@ public class AntecedenteService {
     public Antecedente obtenerPorId(Long id) {
         ArrayList<Antecedente> lista = (ArrayList<Antecedente>) _AntecedenteRepository.findAll();
         Iterator<Antecedente> it = lista.iterator();
+        Antecedente antecedente = new Antecedente();
         while (it.hasNext()) {
             Antecedente aux = it.next();
-            if (id == aux.getIdAntecedente()) {
-                return aux;
+            if (id == aux.getIdAntecedente().longValue()) {
+                antecedente = aux;
+                break;
             }
-
         }
-        return null;
+        return antecedente;
     }
 
     public void eliminarAntecedente(Paciente paciente) {

@@ -16,6 +16,7 @@ import com.example.demo.models.Antecedente;
 import com.example.demo.models.ConsultaInicial;
 import com.example.demo.models.LogError;
 import com.example.demo.models.Paciente;
+import com.example.demo.models.PacienteSelector;
 import com.example.demo.services.AntecedenteService;
 import com.example.demo.services.ConsultaInicialService;
 import com.example.demo.services.EstudioService;
@@ -47,6 +48,33 @@ public class PacienteController {
             return _pacienteService.obtenerPacientes();
         } catch (Exception e) {
             LogError logError = new LogError(e, "Obtener Pacientes");
+            throw new BadRequestException(
+                    "No se pudieron obtener los Pacientes. Si persiste el error comuníquese con el Administrador");
+        }
+    }
+
+    @GetMapping("/paginado/paciente/{pagina}/{nombre}")
+    @Transactional
+    public ArrayList<Paciente> obtenerPacientesPaginado(@PathVariable("pagina") Long pagina,
+            @PathVariable("nombre") String nombre) throws IOException {
+        try {
+            return _pacienteService.getPacientesPaginado(pagina, nombre);
+        } catch (Exception e) {
+            LogError logError = new LogError(e, "Obtener Pacientes");
+            throw new BadRequestException(
+                    "No se pudieron obtener los Pacientes. Si persiste el error comuníquese con el Administrador");
+        }
+    }
+
+    @GetMapping(path = "Selector")
+    public ArrayList<PacienteSelector> GetPacientesFromSelector() throws IOException {
+        try {
+            ArrayList<PacienteSelector> lsita = _pacienteService.GetPacientesFromSelector();
+            System.out.println(lsita.size());
+            System.out.println(lsita.get(0).getApellido());
+            return lsita;
+        } catch (Exception e) {
+            LogError logError = new LogError(e, "GetPacientesFromSelector");
             throw new BadRequestException(
                     "No se pudieron obtener los Pacientes. Si persiste el error comuníquese con el Administrador");
         }
