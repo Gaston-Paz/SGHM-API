@@ -17,6 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.models.Antecedente;
 import com.example.demo.models.ConsultaInicial;
 import com.example.demo.models.Paciente;
 
@@ -27,6 +28,8 @@ public class ExcelService {
         PacienteService _PacienteService;
         @Autowired
         ConsultaInicialService _ConsultaInicialService;
+        @Autowired
+        AntecedenteService _AntecedenteService;
 
         public ResponseEntity<byte[]> ExportarHistoria() throws IOException {
                 Optional<Paciente> paciente = _PacienteService.obtenerPorId((long) 1);
@@ -42,6 +45,40 @@ public class ExcelService {
 
                 XSSFColor fondoVerdeColor = new XSSFColor(new java.awt.Color(184, 223, 184), null);
                 XSSFColor fondoAmarilloColor = new XSSFColor(new java.awt.Color(255, 230, 153), null);
+                XSSFColor fondoNaranjaColor = new XSSFColor(new java.awt.Color(248, 203, 173), null);
+
+                Sheet datosPersonales = workbook.getSheet("Datos Personales");
+                datosPersonales = EscribirDatosPersonales(datosPersonales, paciente.get(), workbook, font,
+                                fondoVerdeColor);
+
+                Sheet consultaInicial = workbook.getSheet("Consulta Inicial");
+                ConsultaInicial consulta = _ConsultaInicialService
+                                .obtenerPorId(paciente.get().getConsultaInicial().getIdConsulta());
+                consultaInicial = EscribirConsultaInicial(consultaInicial, consulta, workbook, font,
+                                fondoAmarilloColor);
+
+                Sheet antecedentes = workbook.getSheet("Antecedentes");
+                Antecedente antecedente = _AntecedenteService
+                                .obtenerPorId(paciente.get().getAntecedente().getIdAntecedente());
+                antecedentes = EscribirAntecedentes(antecedentes, antecedente, workbook, font,
+                                fondoNaranjaColor);
+
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                workbook.write(outputStream);
+
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(
+                                MediaType.parseMediaType(
+                                                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+                headers.setContentDispositionFormData("attachment", nombreArchivo);
+
+                workbook.close();
+
+                return new ResponseEntity<>(outputStream.toByteArray(), headers, HttpStatus.OK);
+        }
+
+        public Sheet EscribirDatosPersonales(Sheet sheet, Paciente paciente, Workbook workbook, Font font,
+                        XSSFColor fondoVerdeColor) {
 
                 CellStyle fondoVerde = workbook.createCellStyle();
                 ((XSSFCellStyle) fondoVerde).setFillForegroundColor(fondoVerdeColor);
@@ -72,60 +109,10 @@ public class ExcelService {
                 bordeBottomMasFondo.setFont(font);
                 bordeBottomMasFondo.setAlignment(HorizontalAlignment.LEFT);
 
-                // Region Hoja datos personales
-                Sheet datosPersonales = workbook.getSheet("Datos Personales");
-                datosPersonales = EscribirDatosPersonales(datosPersonales, paciente.get(), formatoFecha, fondoVerde,
-                                bordeBottomMasFondo, bordeTopMasFondo);
-                datosPersonales.autoSizeColumn(1, true);
-                datosPersonales.autoSizeColumn(2, true);
-                datosPersonales.autoSizeColumn(3, true);
-                datosPersonales.autoSizeColumn(4, true);
-                datosPersonales.autoSizeColumn(5, true);
-
-                int pictureIdx = workbook.addPicture(paciente.get().getFotoPerfil(), Workbook.PICTURE_TYPE_JPEG);
-                CreationHelper helper = workbook.getCreationHelper();
-                Drawing drawing = datosPersonales.createDrawingPatriarch();
-
-                ClientAnchor anchor = helper.createClientAnchor();
-                anchor.setAnchorType(AnchorType.MOVE_AND_RESIZE);
-                anchor.setRow1(5);
-                anchor.setRow2(18);
-                anchor.setCol1(7);
-                anchor.setCol2(10);
-
-                Picture picture = drawing.createPicture(anchor, pictureIdx);
-
-                // endregion
-
-                // region Consulta Inicial
-                Sheet consultaInicial = workbook.getSheet("Consulta Inicial");
-                ConsultaInicial consulta = _ConsultaInicialService
-                                .obtenerPorId(paciente.get().getConsultaInicial().getIdConsulta());
-                consultaInicial = EscribirConsultaInicial(consultaInicial, consulta, workbook, font,
-                                fondoAmarilloColor);
-                // endregion
-                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                workbook.write(outputStream);
-
-                HttpHeaders headers = new HttpHeaders();
-                headers.setContentType(
-                                MediaType.parseMediaType(
-                                                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
-                headers.setContentDispositionFormData("attachment", nombreArchivo);
-
-                workbook.close();
-
-                return new ResponseEntity<>(outputStream.toByteArray(), headers, HttpStatus.OK);
-        }
-
-        public Sheet EscribirDatosPersonales(Sheet sheet, Paciente paciente, CellStyle formatoFecha,
-                        CellStyle fondoVerde,
-                        CellStyle bordeBottom, CellStyle bordeTop) {
-
                 Row rowNombre = sheet.getRow(6);
                 Cell cellNombreValor = rowNombre.createCell(3);
                 cellNombreValor.setCellValue(paciente.getNombre());
-                cellNombreValor.setCellStyle(bordeTop);
+                cellNombreValor.setCellStyle(bordeTopMasFondo);
 
                 Row rowApellido = sheet.getRow(7);
                 Cell cellApellidoValor = rowApellido.createCell(3);
@@ -170,7 +157,26 @@ public class ExcelService {
                 Row rowOtros = sheet.getRow(15);
                 Cell cellOtrosValor = rowOtros.createCell(3);
                 cellOtrosValor.setCellValue(paciente.getOtros());
-                cellOtrosValor.setCellStyle(bordeBottom);
+                cellOtrosValor.setCellStyle(bordeBottomMasFondo);
+
+                sheet.autoSizeColumn(1, true);
+                sheet.autoSizeColumn(2, true);
+                sheet.autoSizeColumn(3, true);
+                sheet.autoSizeColumn(4, true);
+                sheet.autoSizeColumn(5, true);
+
+                int pictureIdx = workbook.addPicture(paciente.getFotoPerfil(), Workbook.PICTURE_TYPE_JPEG);
+                CreationHelper helper = workbook.getCreationHelper();
+                Drawing drawing = sheet.createDrawingPatriarch();
+
+                ClientAnchor anchor = helper.createClientAnchor();
+                anchor.setAnchorType(AnchorType.MOVE_AND_RESIZE);
+                anchor.setRow1(5);
+                anchor.setRow2(18);
+                anchor.setCol1(7);
+                anchor.setCol2(10);
+
+                Picture picture = drawing.createPicture(anchor, pictureIdx);
 
                 return sheet;
         }
@@ -275,7 +281,238 @@ public class ExcelService {
                 cellOtros.setCellValue(consulta.getOtros() != null ? consulta.getOtros() : "-");
                 cellOtros.setCellStyle(fondoAmarilloBordeBottom);
 
+                sheet.autoSizeColumn(1, true);
+                sheet.autoSizeColumn(2, true);
+                sheet.autoSizeColumn(3, true);
+                sheet.autoSizeColumn(4, true);
+                sheet.autoSizeColumn(5, true);
+
                 return sheet;
         }
 
+        public Sheet EscribirAntecedentes(Sheet sheet, Antecedente antecedente, Workbook workbook, Font font,
+                        XSSFColor fondoNaranjaColor) {
+
+                CellStyle fondoNaranja = workbook.createCellStyle();
+                ((XSSFCellStyle) fondoNaranja).setFillForegroundColor(fondoNaranjaColor);
+                fondoNaranja.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+                fondoNaranja.setFont(font);
+                fondoNaranja.setAlignment(HorizontalAlignment.LEFT);
+
+                CellStyle fondoNaranjaBordeBottom = workbook.createCellStyle();
+                ((XSSFCellStyle) fondoNaranjaBordeBottom).setFillForegroundColor(fondoNaranjaColor);
+                fondoNaranjaBordeBottom.setFont(font);
+                fondoNaranjaBordeBottom.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+                fondoNaranjaBordeBottom.setBorderBottom(BorderStyle.MEDIUM);
+                fondoNaranjaBordeBottom.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+
+                CellStyle fondoNaranjaBordeTop = workbook.createCellStyle();
+                ((XSSFCellStyle) fondoNaranjaBordeTop).setFillForegroundColor(fondoNaranjaColor);
+                fondoNaranjaBordeTop.setFont(font);
+                fondoNaranjaBordeTop.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+                fondoNaranjaBordeTop.setBorderTop(BorderStyle.MEDIUM);
+                fondoNaranjaBordeTop.setTopBorderColor(IndexedColors.BLACK.getIndex());
+
+                CellStyle fondoNaranjaBordeTopBottom = workbook.createCellStyle();
+                ((XSSFCellStyle) fondoNaranjaBordeTopBottom).setFillForegroundColor(fondoNaranjaColor);
+                fondoNaranjaBordeTopBottom.setFont(font);
+                fondoNaranjaBordeTopBottom.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+                fondoNaranjaBordeTopBottom.setBorderTop(BorderStyle.MEDIUM);
+                fondoNaranjaBordeTopBottom.setTopBorderColor(IndexedColors.BLACK.getIndex());
+                fondoNaranjaBordeTopBottom.setBorderBottom(BorderStyle.MEDIUM);
+                fondoNaranjaBordeTopBottom.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+
+                Row rowCirugia = sheet.getRow(6);
+                Cell cellCirugia = rowCirugia.createCell(3);
+                cellCirugia.setCellValue(antecedente.getCirugias() != null ? antecedente.getCirugias() : "-");
+                cellCirugia.setCellStyle(fondoNaranjaBordeTopBottom);
+
+                Row rowImplantesSup = sheet.getRow(9);
+                Cell cellImplantesSup = rowImplantesSup.createCell(3);
+                cellImplantesSup.setCellValue(
+                                antecedente.getImplanteSuperior() != null ? antecedente.getImplanteSuperior() : "-");
+                cellImplantesSup.setCellStyle(fondoNaranjaBordeTop);
+
+                Row rowImplantesInf = sheet.getRow(10);
+                Cell cellImplantesInf = rowImplantesInf.createCell(3);
+                cellImplantesInf.setCellValue(
+                                antecedente.getImplanteInferior() != null ? antecedente.getImplanteInferior() : "-");
+                cellImplantesInf.setCellStyle(fondoNaranja);
+
+                Row rowFaltanteSup = sheet.getRow(11);
+                Cell cellFaltanteSup = rowFaltanteSup.createCell(3);
+                cellFaltanteSup.setCellValue(
+                                antecedente.getPiezasFaltantesSup() != null ? antecedente.getPiezasFaltantesSup()
+                                                : "-");
+                cellFaltanteSup.setCellStyle(fondoNaranja);
+
+                Row rowFaltanteInf = sheet.getRow(12);
+                Cell cellFaltanteInf = rowFaltanteInf.createCell(3);
+                cellFaltanteInf.setCellValue(
+                                antecedente.getPiezasFaltantesInf() != null ? antecedente.getPiezasFaltantesInf()
+                                                : "-");
+                cellFaltanteInf.setCellStyle(fondoNaranja);
+
+                Row rowProtesis = sheet.getRow(13);
+                Cell cellProtesis = rowProtesis.createCell(3);
+                cellProtesis.setCellValue(antecedente.getProtesis() != null ? antecedente.getProtesis() : "-");
+                cellProtesis.setCellStyle(fondoNaranja);
+
+                Row rowPlaca = sheet.getRow(14);
+                Cell cellPlaca = rowPlaca.createCell(3);
+                cellPlaca.setCellValue(antecedente.getContencion() ? "Si" : "-¿No");
+                cellPlaca.setCellStyle(fondoNaranja);
+
+                Row rowPlacaDescanso = sheet.getRow(15);
+                Cell cellPlacaDescanso = rowPlacaDescanso.createCell(3);
+                cellPlacaDescanso.setCellValue(antecedente.getPlacaDescanso() ? "Si" : "-¿No");
+                cellPlacaDescanso.setCellStyle(fondoNaranja);
+
+                Row rowOrtodoncia = sheet.getRow(16);
+                Cell cellOrtodoncia = rowOrtodoncia.createCell(3);
+                cellOrtodoncia.setCellValue(antecedente.getOrtodoncia() ? "Si" : "-¿No");
+                cellOrtodoncia.setCellStyle(fondoNaranja);
+
+                if (antecedente.getOrtodoncia()) {
+                        Row rowEdad = sheet.getRow(17);
+                        Cell cellEdad = rowEdad.createCell(3);
+                        cellEdad.setCellValue(antecedente.getEdadOrtodoncia());
+                        cellEdad.setCellStyle(fondoNaranjaBordeBottom);
+                } else {
+                        Row rowEdad = sheet.getRow(17);
+                        Cell cellEdad = rowEdad.createCell(3);
+                        cellEdad.setCellValue("-");
+                        cellEdad.setCellStyle(fondoNaranjaBordeBottom);
+                }
+                Row rowMenstruacion = sheet.getRow(20);
+                Cell cellMenstruacion = rowMenstruacion.createCell(3);
+                cellMenstruacion.setCellValue(antecedente.getMenstruacion() ? "Si" : "-¿No");
+                cellMenstruacion.setCellStyle(fondoNaranjaBordeTop);
+
+                Row rowFrecuencia = sheet.getRow(21);
+                Cell cellFrecuencia = rowFrecuencia.createCell(3);
+                cellFrecuencia.setCellValue(antecedente.getFrecuencia() != null ? antecedente.getFrecuencia() : "-");
+                cellFrecuencia.setCellStyle(fondoNaranja);
+
+                Row rowDuracion = sheet.getRow(22);
+                Cell cellDuracion = rowDuracion.createCell(3);
+                cellDuracion.setCellValue(antecedente.getDuracion() != null ? antecedente.getDuracion() : "-");
+                cellDuracion.setCellStyle(fondoNaranja);
+
+                Row rowVolumen = sheet.getRow(23);
+                Cell cellVolumen = rowVolumen.createCell(3);
+                cellVolumen.setCellValue(antecedente.getVolumen() != null ? antecedente.getVolumen() : "-");
+                cellVolumen.setCellStyle(fondoNaranja);
+
+                Row rowEmbarazos = sheet.getRow(24);
+                Cell cellEmbarazos = rowEmbarazos.createCell(3);
+                cellEmbarazos.setCellValue(antecedente.getEmbarazos() ? "Si" : "-¿No");
+                cellEmbarazos.setCellStyle(fondoNaranja);
+
+                Row rowPartos = sheet.getRow(25);
+                Cell cellPartos = rowPartos.createCell(3);
+                cellPartos.setCellValue(antecedente.getPartos() != null ? antecedente.getPartos() : "-");
+                cellPartos.setCellStyle(fondoNaranja);
+
+                Row rowAbortosEsp = sheet.getRow(26);
+                Cell cellAbortosEsp = rowAbortosEsp.createCell(3);
+                cellAbortosEsp.setCellValue(
+                                antecedente.getAbortosEspontaneo() != null ? antecedente.getAbortosEspontaneo() : "-");
+                cellAbortosEsp.setCellStyle(fondoNaranja);
+
+                Row rowAbortosInd = sheet.getRow(27);
+                Cell cellAbortosInd = rowAbortosInd.createCell(3);
+                cellAbortosInd.setCellValue(
+                                antecedente.getAbortosInducido() != null ? antecedente.getAbortosInducido() : "-");
+                cellAbortosInd.setCellStyle(fondoNaranjaBordeBottom);
+
+                Row rowIntestinal = sheet.getRow(30);
+                Cell cellIntestinal = rowIntestinal.createCell(3);
+                cellIntestinal.setCellValue(antecedente.getIntestinal() != null ? antecedente.getIntestinal() : "-");
+                cellIntestinal.setCellStyle(fondoNaranjaBordeTop);
+
+                Row rowDigestivo = sheet.getRow(31);
+                Cell cellDigestivo = rowDigestivo.createCell(3);
+                cellDigestivo.setCellValue(antecedente.getDigestivo() != null ? antecedente.getDigestivo() : "-");
+                cellDigestivo.setCellStyle(fondoNaranja);
+
+                Row rowCardiaco = sheet.getRow(32);
+                Cell cellCardiaco = rowCardiaco.createCell(3);
+                cellCardiaco.setCellValue(antecedente.getCardiaco() != null ? antecedente.getCardiaco() : "-");
+                cellCardiaco.setCellStyle(fondoNaranja);
+
+                Row rowUrogenital = sheet.getRow(33);
+                Cell cellUrogenital = rowUrogenital.createCell(3);
+                cellUrogenital.setCellValue(antecedente.getUrogenital() != null ? antecedente.getUrogenital() : "-");
+                cellUrogenital.setCellStyle(fondoNaranja);
+
+                Row rowOseo = sheet.getRow(34);
+                Cell cellOseo = rowOseo.createCell(3);
+                cellOseo.setCellValue(antecedente.getOseo() != null ? antecedente.getOseo() : "-");
+                cellOseo.setCellStyle(fondoNaranja);
+
+                Row rowFuma = sheet.getRow(35);
+                Cell cellFuma = rowFuma.createCell(3);
+                cellFuma.setCellValue(antecedente.getFuma() != null ? antecedente.getFuma() : "-");
+                cellFuma.setCellStyle(fondoNaranja);
+
+                Row rowOtrasDrogas = sheet.getRow(36);
+                Cell cellOtrasDrogas = rowOtrasDrogas.createCell(3);
+                cellOtrasDrogas.setCellValue(antecedente.getOtrasDrogas() != null ? antecedente.getOtrasDrogas() : "-");
+                cellOtrasDrogas.setCellStyle(fondoNaranjaBordeBottom);
+
+                Row rowAccidentes = sheet.getRow(39);
+                Cell cellAccidentes = rowAccidentes.createCell(3);
+                cellAccidentes.setCellValue(antecedente.getAccidentes() != null ? antecedente.getAccidentes() : "-");
+                cellAccidentes.setCellStyle(fondoNaranjaBordeTop);
+
+                Row rowMedicacion = sheet.getRow(40);
+                Cell cellMedicacion = rowMedicacion.createCell(3);
+                cellMedicacion.setCellValue(antecedente.getMedicacion() != null ? antecedente.getMedicacion() : "-");
+                cellMedicacion.setCellStyle(fondoNaranja);
+
+                Row rowDiabetes = sheet.getRow(41);
+                Cell cellDiabetes = rowDiabetes.createCell(3);
+                cellDiabetes.setCellValue(antecedente.getDiabetes() ? "Si" : "No");
+                cellDiabetes.setCellStyle(fondoNaranja);
+
+                Row rowFracturas = sheet.getRow(42);
+                Cell cellFracturas = rowFracturas.createCell(3);
+                cellFracturas.setCellValue(antecedente.getFracturas() != null ? antecedente.getFracturas() : "-");
+                cellFracturas.setCellStyle(fondoNaranja);
+
+                Row rowDolorCabeza = sheet.getRow(43);
+                Cell cellDolorCabeza = rowDolorCabeza.createCell(3);
+                cellDolorCabeza.setCellValue(antecedente.getDolorCabeza() != null ? antecedente.getDolorCabeza() : "-");
+                cellDolorCabeza.setCellStyle(fondoNaranja);
+
+                Row rowTiroides = sheet.getRow(44);
+                Cell cellTiroides = rowTiroides.createCell(3);
+                cellTiroides.setCellValue(antecedente.getTiroides() != null ? antecedente.getTiroides() : "-");
+                cellTiroides.setCellStyle(fondoNaranja);
+
+                Row rowOtros = sheet.getRow(45);
+                Cell cellOtros = rowOtros.createCell(3);
+                cellOtros.setCellValue(antecedente.getOtros() != null ? antecedente.getOtros() : "-");
+                cellOtros.setCellStyle(fondoNaranja);
+
+                Row rowAlimentacion = sheet.getRow(46);
+                Cell cellAlimentacion = rowAlimentacion.createCell(3);
+                cellAlimentacion.setCellValue(
+                                antecedente.getAlimentacion() != null ? antecedente.getAlimentacion() : "-");
+                cellAlimentacion.setCellStyle(fondoNaranja);
+
+                Row rowPerdidas = sheet.getRow(47);
+                Cell cellPerdidas = rowPerdidas.createCell(3);
+                cellPerdidas.setCellValue(antecedente.getPerdidas() != null ? antecedente.getPerdidas() : "-");
+                cellPerdidas.setCellStyle(fondoNaranjaBordeBottom);
+
+                sheet.autoSizeColumn(1, true);
+                sheet.autoSizeColumn(2, true);
+                sheet.autoSizeColumn(3, true);
+                sheet.autoSizeColumn(4, true);
+                sheet.autoSizeColumn(5, true);
+
+                return sheet;
+        }
 }
