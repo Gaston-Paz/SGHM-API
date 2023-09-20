@@ -3,6 +3,8 @@ package com.example.demo.services;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Optional;
 
 import org.apache.poi.ss.usermodel.*;
@@ -20,6 +22,7 @@ import org.springframework.stereotype.Service;
 import com.example.demo.models.Antecedente;
 import com.example.demo.models.ConsultaInicial;
 import com.example.demo.models.Paciente;
+import com.example.demo.models.Tratamiento;
 
 @Service
 public class ExcelService {
@@ -30,9 +33,11 @@ public class ExcelService {
         ConsultaInicialService _ConsultaInicialService;
         @Autowired
         AntecedenteService _AntecedenteService;
+        @Autowired
+        TratamientoService _TratamientoService;
 
-        public ResponseEntity<byte[]> ExportarHistoria() throws IOException {
-                Optional<Paciente> paciente = _PacienteService.obtenerPorId((long) 1);
+        public ResponseEntity<byte[]> ExportarHistoria(long idPaciente) throws IOException {
+                Optional<Paciente> paciente = _PacienteService.obtenerPorId(idPaciente);
 
                 FileInputStream template = new FileInputStream(
                                 "C:\\Users\\Gastón\\Documents\\GitHub\\SGHM-API\\src\\main\\resources\\Template-Historia.xlsx");
@@ -46,6 +51,7 @@ public class ExcelService {
                 XSSFColor fondoVerdeColor = new XSSFColor(new java.awt.Color(184, 223, 184), null);
                 XSSFColor fondoAmarilloColor = new XSSFColor(new java.awt.Color(255, 230, 153), null);
                 XSSFColor fondoNaranjaColor = new XSSFColor(new java.awt.Color(248, 203, 173), null);
+                XSSFColor fondoRojoColor = new XSSFColor(new java.awt.Color(244, 120, 120), null);
 
                 Sheet datosPersonales = workbook.getSheet("Datos Personales");
                 datosPersonales = EscribirDatosPersonales(datosPersonales, paciente.get(), workbook, font,
@@ -62,6 +68,12 @@ public class ExcelService {
                                 .obtenerPorId(paciente.get().getAntecedente().getIdAntecedente());
                 antecedentes = EscribirAntecedentes(antecedentes, antecedente, workbook, font,
                                 fondoNaranjaColor);
+
+                Sheet tratamientos = workbook.getSheet("Tratamientos");
+                ArrayList<Tratamiento> tratamiento = _TratamientoService
+                                .obtenerPaciente(paciente.get());
+                antecedentes = EscribirTratamientos(tratamientos, tratamiento, workbook, font,
+                                fondoRojoColor);
 
                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
                 workbook.write(outputStream);
@@ -512,6 +524,128 @@ public class ExcelService {
                 sheet.autoSizeColumn(3, true);
                 sheet.autoSizeColumn(4, true);
                 sheet.autoSizeColumn(5, true);
+
+                return sheet;
+        }
+
+        public Sheet EscribirTratamientos(Sheet sheet, ArrayList<Tratamiento> tratamientos, Workbook workbook,
+                        Font font,
+                        XSSFColor fondoRojoColor) {
+
+                CellStyle estilo = workbook.createCellStyle();
+                ((XSSFCellStyle) estilo).setFillForegroundColor(fondoRojoColor);
+                estilo.setFont(font);
+                estilo.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+                estilo.setBorderTop(BorderStyle.MEDIUM);
+                estilo.setTopBorderColor(IndexedColors.BLACK.getIndex());
+                estilo.setBorderBottom(BorderStyle.MEDIUM);
+                estilo.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+                estilo.setBorderLeft(BorderStyle.MEDIUM);
+                estilo.setLeftBorderColor(IndexedColors.BLACK.getIndex());
+                estilo.setBorderRight(BorderStyle.MEDIUM);
+                estilo.setRightBorderColor(IndexedColors.BLACK.getIndex());
+                estilo.setAlignment(HorizontalAlignment.CENTER);
+
+                CellStyle estiloFecha = workbook.createCellStyle();
+                ((XSSFCellStyle) estiloFecha).setFillForegroundColor(fondoRojoColor);
+                estiloFecha.setFont(font);
+                estiloFecha.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+                estiloFecha.setBorderTop(BorderStyle.MEDIUM);
+                estiloFecha.setTopBorderColor(IndexedColors.BLACK.getIndex());
+                estiloFecha.setBorderBottom(BorderStyle.MEDIUM);
+                estiloFecha.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+                estiloFecha.setBorderLeft(BorderStyle.MEDIUM);
+                estiloFecha.setLeftBorderColor(IndexedColors.BLACK.getIndex());
+                estiloFecha.setBorderRight(BorderStyle.MEDIUM);
+                estiloFecha.setRightBorderColor(IndexedColors.BLACK.getIndex());
+                estiloFecha.setAlignment(HorizontalAlignment.CENTER);
+                estiloFecha.setDataFormat(workbook.getCreationHelper().createDataFormat().getFormat("dd-MM-yyyy"));
+
+                Iterator<Tratamiento> obj = tratamientos.iterator();
+                int fila = 7;
+                while (obj.hasNext()) {
+                        Tratamiento aux = obj.next();
+                        Row row = sheet.createRow(fila);
+                        for (int x = 1; x <= 10; x++) {
+
+                                Cell cellrow = row.createCell(x);
+                                switch (x) {
+                                        case 1:
+                                                cellrow.setCellValue(aux.getFecha());
+                                                break;
+                                        case 2:
+                                                cellrow.setCellValue(aux.getMotivo());
+                                                break;
+                                        case 3:
+                                                cellrow.setCellValue(aux.getTrianguloDeTalla() != null
+                                                                && aux.getTrianguloDeTalla().trim().length() > 0
+                                                                                ? aux.getTrianguloDeTalla()
+                                                                                : "-");
+                                                break;
+                                        case 4:
+                                                cellrow.setCellValue(
+                                                                aux.getBarral() != null
+                                                                                && aux.getBarral().trim().length() > 0
+                                                                                                ? aux.getBarral()
+                                                                                                : "-");
+                                                break;
+                                        case 5:
+                                                cellrow.setCellValue(aux.getAlturaDeIliacos() != null
+                                                                && aux.getAlturaDeIliacos().trim().length() > 0
+                                                                                ? aux.getAlturaDeIliacos()
+                                                                                : "-");
+                                                break;
+                                        case 6:
+                                                cellrow.setCellValue(aux.getEspecifico() != null
+                                                                && aux.getEspecifico().trim().length() > 0
+                                                                                ? aux.getEspecifico()
+                                                                                : "-");
+                                                break;
+                                        case 7:
+                                                cellrow.setCellValue(
+                                                                aux.getEsferas() != null
+                                                                                && aux.getEsferas().trim().length() > 0
+                                                                                                ? aux.getEsferas()
+                                                                                                : "-");
+                                                break;
+                                        case 8:
+                                                cellrow.setCellValue(aux.getSedestacion());
+                                                break;
+                                        case 9:
+                                                cellrow.setCellValue(aux.getSugerencias() != null
+                                                                && aux.getSugerencias().trim().length() > 0
+                                                                                ? aux.getSugerencias()
+                                                                                : "-");
+                                                break;
+
+                                }
+
+                                if (x == 10 && aux.getProximoTurnoIndicado() != null) {
+                                        cellrow.setCellValue(aux.getProximoTurnoIndicado());
+                                        cellrow.setCellStyle(estiloFecha);
+                                } else if (x == 10) {
+                                        cellrow.setCellValue("-");
+                                        cellrow.setCellStyle(estilo);
+                                } else if (x == 1)
+                                        cellrow.setCellStyle(estiloFecha);
+                                else
+                                        cellrow.setCellStyle(estilo);
+
+                        }
+                        fila++;
+                }
+
+                sheet.autoSizeColumn(1, true);
+                sheet.autoSizeColumn(2, true);
+                sheet.autoSizeColumn(3, true);
+                sheet.autoSizeColumn(4, true);
+                sheet.autoSizeColumn(5, true);
+                sheet.autoSizeColumn(6, true);
+                sheet.autoSizeColumn(7, true);
+                sheet.autoSizeColumn(8, true);
+                sheet.autoSizeColumn(9, true);
+                sheet.autoSizeColumn(10, true);
+                sheet.autoSizeColumn(11, true);
 
                 return sheet;
         }
