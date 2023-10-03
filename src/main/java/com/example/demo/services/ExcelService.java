@@ -39,8 +39,10 @@ public class ExcelService {
         public ResponseEntity<byte[]> ExportarHistoria(long idPaciente) throws IOException {
                 Optional<Paciente> paciente = _PacienteService.obtenerPorId(idPaciente);
 
+                // FileInputStream template = new FileInputStream(
+                // "C:\\Users\\Gastón\\Documents\\GitHub\\SGHM-API\\src\\main\\resources\\Template-Historia.xlsx");
                 FileInputStream template = new FileInputStream(
-                                "C:\\Users\\Gastón\\Documents\\GitHub\\SGHM-API\\src\\main\\resources\\Template-Historia.xlsx");
+                                "/home/SGHM-API/src/main/resources/Template-Historia.xlsx");
                 Workbook workbook = new XSSFWorkbook(template);
                 template.close();
 
